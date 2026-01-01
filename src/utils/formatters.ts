@@ -3,6 +3,15 @@ export type FormattedDateWithWeekday = {
   date: string;
 };
 
+export const getRoundedTemperature = (temperature: number): number => {
+  if (!Number.isFinite(temperature)) {
+    return Number.NaN;
+  }
+
+  const rounded = Math.round(temperature);
+  return Object.is(rounded, -0) ? 0 : rounded;
+};
+
 export const formatLastUpdated = (date: Date, timeZone: string): string => {
   const formatter = new Intl.DateTimeFormat('en-GB', {
     timeZone,
@@ -31,11 +40,10 @@ export const formatDateWithWeekday = (dateString: string, timeZone: string): For
 };
 
 export const formatTemperature = (temperature: number): string => {
-  if (!Number.isFinite(temperature)) {
+  const rounded = getRoundedTemperature(temperature);
+  if (Number.isNaN(rounded)) {
     return '–';
   }
 
-  const rounded = Math.round(temperature);
-  const normalized = Object.is(rounded, -0) ? 0 : rounded;
-  return normalized.toString();
+  return rounded.toString();
 };

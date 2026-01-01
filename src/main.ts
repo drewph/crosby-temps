@@ -2,6 +2,7 @@ import './style.css';
 import { formatDate, getLastNDaysRange } from './utils/dateRanges';
 import { formatDateWithWeekday, formatLastUpdated, formatTemperature } from './utils/formatters';
 import { buildOpenMeteoUrl } from './utils/openMeteo';
+import { getTempPillColors } from './utils/temperatureBands';
 
 export type DailyResponse = {
   time: string[];
@@ -62,6 +63,16 @@ const setLastUpdated = (date?: Date) => {
   lastUpdatedElement.textContent = `Last updated: ${formatLastUpdated(date, LOCATION.timezone)}`;
 };
 
+const createTemperaturePill = (value: number, label: 'Max' | 'Min', variant: 'max' | 'min') => {
+  const pill = document.createElement('span');
+  pill.className = `pill ${variant}`;
+  const { bg, fg } = getTempPillColors(value);
+  pill.style.backgroundColor = bg;
+  pill.style.color = fg;
+  pill.textContent = `${label} ${formatTemperature(value)}°C`;
+  return pill;
+};
+
 const updateActiveRange = (range: RangeOption) => {
   rangeButtons.forEach((button) => {
     const value = Number(button.dataset.range);
@@ -96,13 +107,11 @@ const renderTableRows = (rows: TemperatureRow[]) => {
     dateElement.classList.add('date-text');
     dateCell.append(weekdayElement, document.createTextNode(' - '), dateElement);
 
-    const createTemperatureCell = (value: number, label: string, variant: 'max' | 'min') => {
+    const createTemperatureCell = (value: number, label: 'Max' | 'Min', variant: 'max' | 'min') => {
       const cell = document.createElement('td');
       cell.className = `temp-${variant}`;
-      const badge = document.createElement('span');
-      badge.className = `pill ${variant}`;
-      badge.textContent = `${label} ${formatTemperature(value)}°C`;
-      cell.appendChild(badge);
+      const pill = createTemperaturePill(value, label, variant);
+      cell.appendChild(pill);
       return cell;
     };
 
@@ -135,12 +144,8 @@ const renderCards = (rows: TemperatureRow[]) => {
 
     const tempsRow = document.createElement('div');
     tempsRow.className = 'temperatures';
-    const maxPill = document.createElement('span');
-    maxPill.className = 'pill max';
-    maxPill.textContent = `Max ${formatTemperature(max)}°C`;
-    const minPill = document.createElement('span');
-    minPill.className = 'pill min';
-    minPill.textContent = `Min ${formatTemperature(min)}°C`;
+    const maxPill = createTemperaturePill(max, 'Max', 'max');
+    const minPill = createTemperaturePill(min, 'Min', 'min');
 
     tempsRow.append(maxPill, minPill);
     card.append(dateRow, tempsRow);
