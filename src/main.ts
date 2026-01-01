@@ -20,7 +20,8 @@ export type TemperatureRow = {
   min: number;
 };
 
-type RangeOption = 7 | 30;
+type RangeOption = 7 | 30 | 60;
+const RANGE_OPTIONS: RangeOption[] = [7, 30, 60];
 
 const LOCATION = {
   label: 'Crosby, Isle of Man',
@@ -109,7 +110,7 @@ const renderTableRows = (rows: TemperatureRow[]) => {
 
     const createTemperatureCell = (value: number, label: 'Max' | 'Min', variant: 'max' | 'min') => {
       const cell = document.createElement('td');
-      cell.className = `temp-${variant}`;
+      cell.className = `temp-${variant} col-temp`;
       const pill = createTemperaturePill(value, label, variant);
       cell.appendChild(pill);
       return cell;
@@ -192,9 +193,12 @@ const fetchTemperatures = async (range: RangeOption) => {
   }
 };
 
+const parseRangeOption = (value: number): RangeOption | undefined =>
+  RANGE_OPTIONS.includes(value as RangeOption) ? (value as RangeOption) : undefined;
+
 rangeButtons.forEach((button) => {
   button.addEventListener('click', () => {
-    const selectedRange = Number(button.dataset.range) as RangeOption;
+    const selectedRange = parseRangeOption(Number(button.dataset.range));
     if (!selectedRange || selectedRange === currentRange) {
       // Always refetch to allow manual refresh even if the same range is selected
       fetchTemperatures(currentRange);
