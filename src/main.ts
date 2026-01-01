@@ -47,13 +47,23 @@ const renderRows = (daily: DailyResponse) => {
     const row = document.createElement('tr');
     const maxTemp = daily.temperature_2m_max[index];
     const minTemp = daily.temperature_2m_min[index];
-    const formattedDate = formatDateWithWeekday(date, LOCATION.timezone);
+    const { weekday, date: originalDate } = formatDateWithWeekday(date, LOCATION.timezone);
 
-    row.innerHTML = `
-      <td>${formattedDate}</td>
-      <td>${formatTemperature(maxTemp)}</td>
-      <td>${formatTemperature(minTemp)}</td>
-    `;
+    const dateCell = document.createElement('td');
+    const weekdayElement = document.createElement('strong');
+    weekdayElement.textContent = weekday;
+    const dateElement = document.createElement('span');
+    dateElement.textContent = originalDate;
+    dateElement.classList.add('date-text');
+    dateCell.append(weekdayElement, document.createTextNode(' - '), dateElement);
+
+    const maxTempCell = document.createElement('td');
+    maxTempCell.textContent = formatTemperature(maxTemp);
+
+    const minTempCell = document.createElement('td');
+    minTempCell.textContent = formatTemperature(minTemp);
+
+    row.append(dateCell, maxTempCell, minTempCell);
 
     tableBody.appendChild(row);
   });

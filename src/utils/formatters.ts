@@ -1,11 +1,19 @@
-export const formatDateWithWeekday = (dateString: string, timeZone: string): string => {
+export type FormattedDateWithWeekday = {
+  weekday: string;
+  date: string;
+};
+
+export const formatDateWithWeekday = (dateString: string, timeZone: string): FormattedDateWithWeekday => {
   const date = new Date(`${dateString}T12:00:00Z`);
   const weekdayFormatter = new Intl.DateTimeFormat('en-GB', {
     weekday: 'long',
     timeZone
   });
   const weekday = weekdayFormatter.format(date);
-  return `${weekday} - ${dateString}`;
+  return {
+    weekday,
+    date: dateString
+  };
 };
 
 export const formatTemperature = (temperature: number): string => {
