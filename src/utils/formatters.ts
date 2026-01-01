@@ -29,13 +29,18 @@ export const formatLastUpdated = (date: Date, timeZone: string): string => {
 export const formatDateWithWeekday = (dateString: string, timeZone: string): FormattedDateWithWeekday => {
   const date = new Date(`${dateString}T12:00:00Z`);
   const weekdayFormatter = new Intl.DateTimeFormat('en-GB', {
-    weekday: 'long',
-    timeZone
+    timeZone,
+    weekday: 'long'
   });
-  const weekday = weekdayFormatter.format(date);
+  const dateFormatter = new Intl.DateTimeFormat('en-GB', {
+    timeZone,
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric'
+  });
   return {
-    weekday,
-    date: dateString
+    weekday: weekdayFormatter.format(date),
+    date: dateFormatter.format(date)
   };
 };
 
