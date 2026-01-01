@@ -37,6 +37,14 @@ describe('getLastNDaysRange', () => {
     expect(formatDate(range.start)).toBe('2024-05-16');
   });
 
+  it('returns a 60 day range ending yesterday with the correct start and length', () => {
+    const range = getLastNDaysRange(60, TIMEZONE);
+    expect(formatDate(range.end)).toBe('2024-06-14');
+    expect(formatDate(range.start)).toBe('2024-04-16');
+    const diffInDays = Math.round((range.end.getTime() - range.start.getTime()) / (1000 * 60 * 60 * 24)) + 1;
+    expect(diffInDays).toBe(60);
+  });
+
   it('throws when days is less than 1', () => {
     expect(() => getLastNDaysRange(0)).toThrowError('Days must be at least 1');
   });
