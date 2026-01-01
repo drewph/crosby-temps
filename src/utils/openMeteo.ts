@@ -22,5 +22,7 @@ export const buildOpenMeteoUrl = ({
   url.searchParams.set('start_date', startDate);
   url.searchParams.set('end_date', endDate);
   url.searchParams.set('daily', DAILY_VARIABLES.join(','));
+  url.searchParams.set('models', 'ukmo_seamless');
+  url.searchParams.set('cell_selection', 'nearest');
   return url;
 };
