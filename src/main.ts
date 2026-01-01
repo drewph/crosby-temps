@@ -3,7 +3,7 @@ import { formatDate, getLastNDaysRange } from './utils/dateRanges';
 import { formatDateWithWeekday, formatLastUpdated, formatTemperature } from './utils/formatters';
 import { buildOpenMeteoUrl } from './utils/openMeteo';
 
-type DailyResponse = {
+export type DailyResponse = {
   time: string[];
   temperature_2m_max: number[];
   temperature_2m_min: number[];
@@ -13,7 +13,7 @@ type OpenMeteoResponse = {
   daily?: DailyResponse;
 };
 
-type TemperatureRow = {
+export type TemperatureRow = {
   date: string;
   max: number;
   min: number;
@@ -71,12 +71,14 @@ const updateActiveRange = (range: RangeOption) => {
   });
 };
 
-const buildRows = (daily: DailyResponse): TemperatureRow[] =>
-  daily.time.map((date, index) => ({
-    date,
-    max: daily.temperature_2m_max[index],
-    min: daily.temperature_2m_min[index]
-  }));
+export const buildRows = (daily: DailyResponse): TemperatureRow[] =>
+  daily.time
+    .map((date, index) => ({
+      date,
+      max: daily.temperature_2m_max[index],
+      min: daily.temperature_2m_min[index]
+    }))
+    .sort((first, second) => Date.parse(second.date) - Date.parse(first.date));
 
 const renderTableRows = (rows: TemperatureRow[]) => {
   if (!tableBody) return;
