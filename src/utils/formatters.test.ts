@@ -2,14 +2,18 @@ import { describe, expect, it } from 'vitest';
 import { formatDateWithWeekday, formatTemperature } from './formatters';
 
 describe('formatDateWithWeekday', () => {
-  it('returns the weekday with the original date string using the provided timezone', () => {
+  it('returns the weekday and date string using the provided timezone', () => {
     const formatted = formatDateWithWeekday('2025-12-28', 'Europe/London');
-    expect(formatted).toBe('Sunday - 2025-12-28');
+    expect(formatted).toEqual({
+      weekday: 'Sunday',
+      date: '2025-12-28'
+    });
   });
 
   it('calculates the weekday based on the supplied timezone', () => {
     const formatted = formatDateWithWeekday('2024-03-31', 'Europe/London');
-    expect(formatted).toBe('Sunday - 2024-03-31');
+    expect(formatted.weekday).toBe('Sunday');
+    expect(formatted.date).toBe('2024-03-31');
   });
 });
 
