@@ -98,15 +98,21 @@ const renderTableRows = (rows: TemperatureRow[]) => {
 
   rows.forEach(({ date, max, min }) => {
     const row = document.createElement('tr');
-    const { weekday, date: originalDate } = formatDateWithWeekday(date, LOCATION.timezone);
+    const { weekday, date: formattedDate } = formatDateWithWeekday(date, LOCATION.timezone);
 
     const dateCell = document.createElement('td');
-    const weekdayElement = document.createElement('strong');
+    dateCell.classList.add('date-cell');
+    const dateStack = document.createElement('div');
+    dateStack.className = 'date-stack';
+
+    const weekdayElement = document.createElement('span');
+    weekdayElement.className = 'date-weekday';
     weekdayElement.textContent = weekday;
     const dateElement = document.createElement('span');
-    dateElement.textContent = originalDate;
-    dateElement.classList.add('date-text');
-    dateCell.append(weekdayElement, document.createTextNode(' - '), dateElement);
+    dateElement.textContent = formattedDate;
+    dateElement.className = 'date-subtext';
+    dateStack.append(weekdayElement, dateElement);
+    dateCell.append(dateStack);
 
     const createTemperatureCell = (value: number, label: 'Max' | 'Min', variant: 'max' | 'min') => {
       const cell = document.createElement('td');
@@ -132,16 +138,16 @@ const renderCards = (rows: TemperatureRow[]) => {
     const card = document.createElement('article');
     card.className = 'temp-card';
 
-    const { weekday, date: originalDate } = formatDateWithWeekday(date, LOCATION.timezone);
+    const { weekday, date: formattedDate } = formatDateWithWeekday(date, LOCATION.timezone);
     const dateRow = document.createElement('div');
-    dateRow.className = 'date';
+    dateRow.className = 'date date-stack';
     const weekdayEl = document.createElement('span');
-    weekdayEl.className = 'weekday';
+    weekdayEl.className = 'date-weekday';
     weekdayEl.textContent = weekday;
     const dayEl = document.createElement('span');
-    dayEl.className = 'day';
-    dayEl.textContent = originalDate;
-    dateRow.append(weekdayEl, document.createTextNode(' • '), dayEl);
+    dayEl.className = 'date-subtext';
+    dayEl.textContent = formattedDate;
+    dateRow.append(weekdayEl, dayEl);
 
     const tempsRow = document.createElement('div');
     tempsRow.className = 'temperatures';

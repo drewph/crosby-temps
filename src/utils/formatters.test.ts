@@ -6,14 +6,14 @@ describe('formatDateWithWeekday', () => {
     const formatted = formatDateWithWeekday('2025-12-28', 'Europe/London');
     expect(formatted).toEqual({
       weekday: 'Sunday',
-      date: '2025-12-28'
+      date: '28 Dec 2025'
     });
   });
 
   it('calculates the weekday based on the supplied timezone', () => {
     const formatted = formatDateWithWeekday('2024-03-31', 'Europe/London');
     expect(formatted.weekday).toBe('Sunday');
-    expect(formatted.date).toBe('2024-03-31');
+    expect(formatted.date).toBe('31 Mar 2024');
   });
 });
 
