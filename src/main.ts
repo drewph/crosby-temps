@@ -96,11 +96,18 @@ const renderTableRows = (rows: TemperatureRow[]) => {
     dateElement.classList.add('date-text');
     dateCell.append(weekdayElement, document.createTextNode(' - '), dateElement);
 
-    const maxTempCell = document.createElement('td');
-    maxTempCell.textContent = formatTemperature(max);
+    const createTemperatureCell = (value: number, label: string, variant: 'max' | 'min') => {
+      const cell = document.createElement('td');
+      cell.className = `temp-${variant}`;
+      const badge = document.createElement('span');
+      badge.className = `pill ${variant}`;
+      badge.textContent = `${label} ${formatTemperature(value)}°C`;
+      cell.appendChild(badge);
+      return cell;
+    };
 
-    const minTempCell = document.createElement('td');
-    minTempCell.textContent = formatTemperature(min);
+    const maxTempCell = createTemperatureCell(max, 'Max', 'max');
+    const minTempCell = createTemperatureCell(min, 'Min', 'min');
 
     row.append(dateCell, maxTempCell, minTempCell);
     tableBody.appendChild(row);
