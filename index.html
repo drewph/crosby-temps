@@ -13,21 +13,34 @@
           <div class="eyebrow">Daily temperatures</div>
           <h1 id="location-name"></h1>
           <p class="coordinates" id="coordinates"></p>
+          <p class="last-updated" id="last-updated"></p>
         </div>
         <p class="status" id="status" role="status" aria-live="polite"></p>
       </header>
 
       <main>
-        <table id="temperatures" aria-live="polite">
-          <thead>
-            <tr>
-              <th scope="col">Date</th>
-              <th scope="col">Max (°C)</th>
-              <th scope="col">Min (°C)</th>
-            </tr>
-          </thead>
-          <tbody></tbody>
-        </table>
+        <div class="controls">
+          <div class="range-buttons" role="group" aria-label="Quick ranges">
+            <button class="range-button active" data-range="7" type="button">Last 7</button>
+            <button class="range-button" data-range="30" type="button">Last 30</button>
+          </div>
+        </div>
+
+        <section class="data-card">
+          <div class="table-wrapper">
+            <table id="temperatures" aria-live="polite">
+              <thead>
+                <tr>
+                  <th scope="col">Date</th>
+                  <th scope="col">Max (°C)</th>
+                  <th scope="col">Min (°C)</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+          <div id="card-list" class="card-list" aria-live="polite"></div>
+        </section>
       </main>
     </div>
     <script type="module" src="/src/main.ts"></script>

@@ -49,6 +49,13 @@ header {
   color: #475569;
 }
 
+.last-updated {
+  margin: 0.3rem 0 0;
+  color: #0f172a;
+  font-weight: 500;
+  font-size: 0.95rem;
+}
+
 .status {
   margin: 0;
   color: #0ea5e9;
@@ -65,8 +72,54 @@ main {
   background: #fff;
   border: 1px solid #e2e8f0;
   border-radius: 12px;
-  padding: 1rem;
+  padding: 1.25rem;
   box-shadow: 0 10px 30px rgba(15, 23, 42, 0.05);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.range-buttons {
+  display: inline-flex;
+  gap: 0.5rem;
+  background: #f8fafc;
+  padding: 0.35rem;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+}
+
+.range-button {
+  border: none;
+  background: transparent;
+  padding: 0.65rem 1rem;
+  border-radius: 10px;
+  font-weight: 600;
+  color: #0f172a;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.range-button:hover {
+  background: #e2e8f0;
+}
+
+.range-button.active {
+  background: #0ea5e9;
+  color: #fff;
+  box-shadow: 0 10px 25px rgba(14, 165, 233, 0.25);
+}
+
+.data-card {
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 1rem;
+  background: #fff;
 }
 
 table {
@@ -95,6 +148,65 @@ tbody tr:hover {
   font-weight: 400;
 }
 
+.table-wrapper {
+  overflow-x: auto;
+}
+
+.card-list {
+  display: none;
+  gap: 0.75rem;
+}
+
+.temp-card {
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 0.85rem 1rem;
+  background: #fff;
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.05);
+}
+
+.temp-card .date {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-weight: 700;
+  margin: 0 0 0.4rem;
+}
+
+.temp-card .weekday {
+  color: #0f172a;
+}
+
+.temp-card .day {
+  color: #475569;
+  font-weight: 500;
+}
+
+.temp-card .temperatures {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.pill {
+  padding: 0.45rem 0.65rem;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 0.95rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.pill.max {
+  background: rgba(249, 115, 22, 0.1);
+  color: #c2410c;
+}
+
+.pill.min {
+  background: rgba(14, 165, 233, 0.1);
+  color: #0b5eb2;
+}
+
 @media (max-width: 640px) {
   header {
     flex-direction: column;
@@ -103,5 +215,26 @@ tbody tr:hover {
 
   .status {
     text-align: left;
+  }
+
+  :root {
+    font-size: 17px;
+  }
+
+  main {
+    padding: 1rem;
+  }
+
+  .data-card {
+    padding: 0.85rem;
+  }
+
+  .table-wrapper {
+    display: none;
+  }
+
+  .card-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
   }
 }
