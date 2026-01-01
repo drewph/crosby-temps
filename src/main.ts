@@ -1,6 +1,6 @@
 import './style.css';
 import { formatDate, getLastNDaysRange } from './utils/dateRanges';
-import { formatDateWithWeekday, formatTemperature } from './utils/formatters';
+import { formatDateWithWeekday, formatLastUpdated, formatTemperature } from './utils/formatters';
 import { buildOpenMeteoUrl } from './utils/openMeteo';
 
 type DailyResponse = {
@@ -13,6 +13,14 @@ type OpenMeteoResponse = {
   daily?: DailyResponse;
 };
 
+type TemperatureRow = {
+  date: string;
+  max: number;
+  min: number;
+};
+
+type RangeOption = 7 | 30;
+
 const LOCATION = {
   label: 'Crosby, Isle of Man',
   latitude: 54.166927,
@@ -20,10 +28,16 @@ const LOCATION = {
   timezone: 'Europe/London'
 };
 
+const DEFAULT_RANGE: RangeOption = 7;
+let currentRange: RangeOption = DEFAULT_RANGE;
+
 const locationName = document.getElementById('location-name');
 const coordinates = document.getElementById('coordinates');
 const status = document.getElementById('status');
 const tableBody = document.querySelector('#temperatures tbody');
+const cardList = document.getElementById('card-list');
+const lastUpdatedElement = document.getElementById('last-updated');
+const rangeButtons = Array.from(document.querySelectorAll<HTMLButtonElement>('.range-button'));
 
 if (locationName) {
   locationName.textContent = LOCATION.label;
@@ -39,14 +53,39 @@ const setStatus = (message: string, isError = false) => {
   status.classList.toggle('error', isError);
 };
 
-const renderRows = (daily: DailyResponse) => {
+const setLastUpdated = (date?: Date) => {
+  if (!lastUpdatedElement) return;
+  if (!date) {
+    lastUpdatedElement.textContent = '';
+    return;
+  }
+  lastUpdatedElement.textContent = `Last updated: ${formatLastUpdated(date, LOCATION.timezone)}`;
+};
+
+const updateActiveRange = (range: RangeOption) => {
+  rangeButtons.forEach((button) => {
+    const value = Number(button.dataset.range);
+    const isActive = value === range;
+    button.classList.toggle('active', isActive);
+    button.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+  });
+};
+
+const buildRows = (daily: DailyResponse): TemperatureRow[] =>
+  daily.time
+    .map((date, index) => ({
+      date,
+      max: daily.temperature_2m_max[index],
+      min: daily.temperature_2m_min[index]
+    }))
+    .sort((a, b) => b.date.localeCompare(a.date));
+
+const renderTableRows = (rows: TemperatureRow[]) => {
   if (!tableBody) return;
   tableBody.innerHTML = '';
 
-  daily.time.forEach((date, index) => {
+  rows.forEach(({ date, max, min }) => {
     const row = document.createElement('tr');
-    const maxTemp = daily.temperature_2m_max[index];
-    const minTemp = daily.temperature_2m_min[index];
     const { weekday, date: originalDate } = formatDateWithWeekday(date, LOCATION.timezone);
 
     const dateCell = document.createElement('td');
@@ -58,20 +97,59 @@ const renderRows = (daily: DailyResponse) => {
     dateCell.append(weekdayElement, document.createTextNode(' - '), dateElement);
 
     const maxTempCell = document.createElement('td');
-    maxTempCell.textContent = formatTemperature(maxTemp);
+    maxTempCell.textContent = formatTemperature(max);
 
     const minTempCell = document.createElement('td');
-    minTempCell.textContent = formatTemperature(minTemp);
+    minTempCell.textContent = formatTemperature(min);
 
     row.append(dateCell, maxTempCell, minTempCell);
-
     tableBody.appendChild(row);
   });
 };
 
-const fetchTemperatures = async () => {
+const renderCards = (rows: TemperatureRow[]) => {
+  if (!cardList) return;
+  cardList.innerHTML = '';
+
+  rows.forEach(({ date, max, min }) => {
+    const card = document.createElement('article');
+    card.className = 'temp-card';
+
+    const { weekday, date: originalDate } = formatDateWithWeekday(date, LOCATION.timezone);
+    const dateRow = document.createElement('div');
+    dateRow.className = 'date';
+    const weekdayEl = document.createElement('span');
+    weekdayEl.className = 'weekday';
+    weekdayEl.textContent = weekday;
+    const dayEl = document.createElement('span');
+    dayEl.className = 'day';
+    dayEl.textContent = originalDate;
+    dateRow.append(weekdayEl, document.createTextNode(' • '), dayEl);
+
+    const tempsRow = document.createElement('div');
+    tempsRow.className = 'temperatures';
+    const maxPill = document.createElement('span');
+    maxPill.className = 'pill max';
+    maxPill.textContent = `Max ${formatTemperature(max)}°C`;
+    const minPill = document.createElement('span');
+    minPill.className = 'pill min';
+    minPill.textContent = `Min ${formatTemperature(min)}°C`;
+
+    tempsRow.append(maxPill, minPill);
+    card.append(dateRow, tempsRow);
+    cardList.appendChild(card);
+  });
+};
+
+const render = (rows: TemperatureRow[]) => {
+  renderTableRows(rows);
+  renderCards(rows);
+};
+
+const fetchTemperatures = async (range: RangeOption) => {
   setStatus('Loading data...');
-  const { start, end } = getLastNDaysRange(7);
+
+  const { start, end } = getLastNDaysRange(range, LOCATION.timezone);
 
   const url = buildOpenMeteoUrl({
     latitude: LOCATION.latitude,
@@ -92,7 +170,9 @@ const fetchTemperatures = async () => {
       throw new Error('Unexpected response format');
     }
 
-    renderRows(data.daily);
+    const rows = buildRows(data.daily);
+    render(rows);
+    setLastUpdated(new Date());
     setStatus('');
   } catch (error) {
     console.error(error);
@@ -100,4 +180,19 @@ const fetchTemperatures = async () => {
   }
 };
 
-fetchTemperatures();
+rangeButtons.forEach((button) => {
+  button.addEventListener('click', () => {
+    const selectedRange = Number(button.dataset.range) as RangeOption;
+    if (!selectedRange || selectedRange === currentRange) {
+      // Always refetch to allow manual refresh even if the same range is selected
+      fetchTemperatures(currentRange);
+      return;
+    }
+    currentRange = selectedRange;
+    updateActiveRange(currentRange);
+    fetchTemperatures(currentRange);
+  });
+});
+
+updateActiveRange(DEFAULT_RANGE);
+fetchTemperatures(DEFAULT_RANGE);

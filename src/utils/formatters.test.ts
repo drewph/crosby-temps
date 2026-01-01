@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { formatDateWithWeekday, formatTemperature } from './formatters';
+import { formatDateWithWeekday, formatLastUpdated, formatTemperature } from './formatters';
 
 describe('formatDateWithWeekday', () => {
   it('returns the weekday and date string using the provided timezone', () => {
@@ -14,6 +14,13 @@ describe('formatDateWithWeekday', () => {
     const formatted = formatDateWithWeekday('2024-03-31', 'Europe/London');
     expect(formatted.weekday).toBe('Sunday');
     expect(formatted.date).toBe('2024-03-31');
+  });
+});
+
+describe('formatLastUpdated', () => {
+  it('returns a non-empty, formatted timestamp string', () => {
+    const formatted = formatLastUpdated(new Date('2026-01-01T10:42:00Z'), 'Europe/London');
+    expect(formatted.length).toBeGreaterThan(0);
   });
 });
 
