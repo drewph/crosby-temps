@@ -1,5 +1,6 @@
 import './style.css';
 import { formatDate, getLastNDaysRange } from './utils/dateRanges';
+import { formatDateWithWeekday, formatTemperature } from './utils/formatters';
 import { buildOpenMeteoUrl } from './utils/openMeteo';
 
 type DailyResponse = {
@@ -46,11 +47,12 @@ const renderRows = (daily: DailyResponse) => {
     const row = document.createElement('tr');
     const maxTemp = daily.temperature_2m_max[index];
     const minTemp = daily.temperature_2m_min[index];
+    const formattedDate = formatDateWithWeekday(date, LOCATION.timezone);
 
     row.innerHTML = `
-      <td>${date}</td>
-      <td>${Number.isFinite(maxTemp) ? maxTemp.toFixed(1) : '–'}</td>
-      <td>${Number.isFinite(minTemp) ? minTemp.toFixed(1) : '–'}</td>
+      <td>${formattedDate}</td>
+      <td>${formatTemperature(maxTemp)}</td>
+      <td>${formatTemperature(minTemp)}</td>
     `;
 
     tableBody.appendChild(row);
