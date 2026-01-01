@@ -24,8 +24,8 @@ type RangeOption = 7 | 30;
 
 const LOCATION = {
   label: 'Crosby, Isle of Man',
-  latitude: 54.166927,
-  longitude: -4.551285,
+  latitude: 54.18031473227185,
+  longitude: -4.54729408020627,
   timezone: 'Europe/London'
 };
 
