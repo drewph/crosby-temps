@@ -39,7 +39,12 @@ const status = document.getElementById('status');
 const tableBody = document.querySelector('#temperatures tbody');
 const cardList = document.getElementById('card-list');
 const lastUpdatedElement = document.getElementById('last-updated');
+const siteLogo = document.getElementById('site-logo') as HTMLImageElement | null;
 const rangeButtons = Array.from(document.querySelectorAll<HTMLButtonElement>('.range-button'));
+
+if (siteLogo) {
+  siteLogo.src = `${import.meta.env.BASE_URL}logo.png`;
+}
 
 if (locationName) {
   locationName.textContent = LOCATION.label;
