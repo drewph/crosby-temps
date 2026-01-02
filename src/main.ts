@@ -3,24 +3,15 @@ import { formatDate, getLastNDaysRange } from './utils/dateRanges';
 import { formatDateWithWeekday, formatLastUpdated, formatTemperature } from './utils/formatters';
 import { buildOpenMeteoUrl } from './utils/openMeteo';
 import { getTempPillColors } from './utils/temperatureBands';
-
-export type DailyResponse = {
-  time: string[];
-  temperature_2m_max: number[];
-  temperature_2m_min: number[];
-};
+import { buildDays, buildMonthGrid, groupByMonthKey } from './utils/calendar';
+import { DailyResponse, Day, TemperatureRow } from './types';
 
 type OpenMeteoResponse = {
   daily?: DailyResponse;
 };
 
-export type TemperatureRow = {
-  date: string;
-  max: number;
-  min: number;
-};
-
 type RangeOption = 7 | 30 | 60;
+type ViewMode = 'list' | 'calendar';
 const RANGE_OPTIONS: RangeOption[] = [7, 30, 60];
 
 const LOCATION = {
@@ -31,7 +22,12 @@ const LOCATION = {
 };
 
 const DEFAULT_RANGE: RangeOption = 7;
+const DEFAULT_VIEW: ViewMode = 'list';
 let currentRange: RangeOption = DEFAULT_RANGE;
+let currentView: ViewMode = DEFAULT_VIEW;
+let cachedDays: Day[] = [];
+
+const WEEKDAY_LABELS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
 const locationName = document.getElementById('location-name');
 const coordinates = document.getElementById('coordinates');
@@ -41,6 +37,9 @@ const cardList = document.getElementById('card-list');
 const lastUpdatedElement = document.getElementById('last-updated');
 const siteLogo = document.getElementById('site-logo') as HTMLImageElement | null;
 const rangeButtons = Array.from(document.querySelectorAll<HTMLButtonElement>('.range-button'));
+const viewButtons = Array.from(document.querySelectorAll<HTMLButtonElement>('.view-button'));
+const listSection = document.getElementById('list-view');
+const calendarSection = document.getElementById('calendar-view');
 
 if (siteLogo) {
   siteLogo.src = `${import.meta.env.BASE_URL}logo.png`;
@@ -79,6 +78,16 @@ const createTemperaturePill = (value: number, label: 'Max' | 'Min', variant: 'ma
   return pill;
 };
 
+const createCompactTemperaturePill = (value: number, variant: 'max' | 'min', label: 'H' | 'L') => {
+  const pill = document.createElement('span');
+  pill.className = `pill ${variant} compact`;
+  const { bg, fg } = getTempPillColors(value);
+  pill.style.backgroundColor = bg;
+  pill.style.color = fg;
+  pill.textContent = `${label} ${formatTemperature(value)}°`;
+  return pill;
+};
+
 const updateActiveRange = (range: RangeOption) => {
   rangeButtons.forEach((button) => {
     const value = Number(button.dataset.range);
@@ -88,14 +97,31 @@ const updateActiveRange = (range: RangeOption) => {
   });
 };
 
-export const buildRows = (daily: DailyResponse): TemperatureRow[] =>
-  daily.time
-    .map((date, index) => ({
-      date,
-      max: daily.temperature_2m_max[index],
-      min: daily.temperature_2m_min[index]
-    }))
-    .sort((first, second) => Date.parse(second.date) - Date.parse(first.date));
+const updateActiveView = (view: ViewMode) => {
+  viewButtons.forEach((button) => {
+    const buttonView = button.dataset.view as ViewMode | undefined;
+    const isActive = buttonView === view;
+    button.classList.toggle('active', isActive);
+    button.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+  });
+};
+
+const showView = (view: ViewMode) => {
+  currentView = view;
+  updateActiveView(currentView);
+  const isListView = currentView === 'list';
+  listSection?.classList.toggle('hidden', !isListView);
+  calendarSection?.classList.toggle('hidden', isListView);
+};
+
+const buildRows = (days: Day[]): TemperatureRow[] =>
+  [...days]
+    .sort((first, second) => Date.parse(second.isoDate) - Date.parse(first.isoDate))
+    .map((day) => ({
+      date: day.isoDate,
+      max: day.maxC,
+      min: day.minC
+    }));
 
 const renderTableRows = (rows: TemperatureRow[]) => {
   if (!tableBody) return;
@@ -165,9 +191,90 @@ const renderCards = (rows: TemperatureRow[]) => {
   });
 };
 
-const render = (rows: TemperatureRow[]) => {
+const renderListView = (days: Day[]) => {
+  const rows = buildRows(days);
   renderTableRows(rows);
   renderCards(rows);
+};
+
+const renderCalendarView = (days: Day[]) => {
+  if (!calendarSection) return;
+  calendarSection.innerHTML = '';
+
+  if (!days.length) {
+    const emptyState = document.createElement('p');
+    emptyState.className = 'calendar-empty';
+    emptyState.textContent = 'No data to display yet.';
+    calendarSection.appendChild(emptyState);
+    return;
+  }
+
+  const monthGroups = groupByMonthKey(days);
+  const monthFormatter = new Intl.DateTimeFormat('en-GB', {
+    timeZone: LOCATION.timezone,
+    month: 'long',
+    year: 'numeric'
+  });
+
+  monthGroups.forEach(({ monthKey, days: monthDays }) => {
+    const [year, month] = monthKey.split('-').map(Number);
+    const monthSection = document.createElement('section');
+    monthSection.className = 'calendar-month';
+
+    const heading = document.createElement('h3');
+    heading.textContent = monthFormatter.format(new Date(Date.UTC(year, (month ?? 1) - 1, 1)));
+    monthSection.appendChild(heading);
+
+    const weekdayRow = document.createElement('div');
+    weekdayRow.className = 'calendar-weekdays';
+    WEEKDAY_LABELS.forEach((label) => {
+      const labelEl = document.createElement('div');
+      labelEl.className = 'calendar-weekday';
+      labelEl.textContent = label;
+      weekdayRow.appendChild(labelEl);
+    });
+    monthSection.appendChild(weekdayRow);
+
+    const grid = buildMonthGrid(year, (month ?? 1) - 1, monthDays);
+    const gridEl = document.createElement('div');
+    gridEl.className = 'calendar-grid';
+
+    grid.forEach((day) => {
+      const cell = document.createElement('div');
+      cell.className = 'calendar-cell';
+
+      if (!day) {
+        cell.classList.add('empty');
+        gridEl.appendChild(cell);
+        return;
+      }
+
+      const dayNumber = document.createElement('div');
+      dayNumber.className = 'day-number';
+      dayNumber.textContent = day.dayOfMonth.toString();
+
+      const pillStack = document.createElement('div');
+      pillStack.className = 'pill-stack';
+      const maxPill = createCompactTemperaturePill(day.maxC, 'max', 'H');
+      const minPill = createCompactTemperaturePill(day.minC, 'min', 'L');
+      pillStack.append(maxPill, minPill);
+
+      cell.append(dayNumber, pillStack);
+      gridEl.appendChild(cell);
+    });
+
+    monthSection.appendChild(gridEl);
+    calendarSection.appendChild(monthSection);
+  });
+};
+
+const renderForCurrentView = () => {
+  if (currentView === 'list') {
+    renderListView(cachedDays);
+    return;
+  }
+
+  renderCalendarView(cachedDays);
 };
 
 const fetchTemperatures = async (range: RangeOption) => {
@@ -194,8 +301,8 @@ const fetchTemperatures = async (range: RangeOption) => {
       throw new Error('Unexpected response format');
     }
 
-    const rows = buildRows(data.daily);
-    render(rows);
+    cachedDays = buildDays(data.daily);
+    renderForCurrentView();
     setLastUpdated(new Date());
     setStatus('');
   } catch (error) {
@@ -221,5 +328,15 @@ rangeButtons.forEach((button) => {
   });
 });
 
+viewButtons.forEach((button) => {
+  button.addEventListener('click', () => {
+    const selectedView = button.dataset.view as ViewMode | undefined;
+    if (!selectedView || selectedView === currentView) return;
+    showView(selectedView);
+    renderForCurrentView();
+  });
+});
+
+showView(DEFAULT_VIEW);
 updateActiveRange(DEFAULT_RANGE);
 fetchTemperatures(DEFAULT_RANGE);
