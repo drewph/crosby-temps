@@ -28,29 +28,22 @@
             <button class="range-button" data-range="30" type="button">Last 30</button>
             <button class="range-button" data-range="60" type="button">Last 60</button>
           </div>
-          <div class="view-toggle" role="group" aria-label="View mode">
-            <button class="view-button active" data-view="list" type="button">List</button>
-            <button class="view-button" data-view="calendar" type="button">Calendar</button>
-          </div>
         </div>
 
         <section class="data-card">
-          <div id="list-view" class="view-section active" aria-live="polite">
-            <div class="table-wrapper">
-              <table id="temperatures" aria-live="polite">
-                <thead>
-                  <tr>
-                    <th scope="col">Date</th>
-                    <th scope="col" class="col-temp">Max (°C)</th>
-                    <th scope="col" class="col-temp">Min (°C)</th>
-                  </tr>
-                </thead>
-                <tbody></tbody>
-              </table>
-            </div>
-            <div id="card-list" class="card-list"></div>
+          <div class="table-wrapper">
+            <table id="temperatures" aria-live="polite">
+              <thead>
+                <tr>
+                  <th scope="col">Date</th>
+                  <th scope="col" class="col-temp">Max (°C)</th>
+                  <th scope="col" class="col-temp">Min (°C)</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
           </div>
-          <div id="calendar-view" class="view-section calendar-view" aria-live="polite"></div>
+          <div id="card-list" class="card-list" aria-live="polite"></div>
         </section>
       </main>
     </div>
