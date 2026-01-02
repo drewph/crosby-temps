@@ -1,9 +1,16 @@
 import './style.css';
 import { formatDate, getLastNDaysRange } from './utils/dateRanges';
-import { formatDateWithWeekday, formatLastUpdated, formatTemperature } from './utils/formatters';
+import {
+  formatDateWithWeekday,
+  formatFullDateWithWeekday,
+  formatLastUpdated,
+  formatModalTemperatureLabel,
+  formatTemperature
+} from './utils/formatters';
 import { buildOpenMeteoUrl } from './utils/openMeteo';
 import { getTempPillColors } from './utils/temperatureBands';
 import { buildDays, buildMonthGrid, groupByMonthKey } from './utils/calendar';
+import { COMPACT_CALENDAR_QUERY, isCompactCalendar } from './utils/responsive';
 import { DailyResponse, Day, TemperatureRow } from './types';
 
 type OpenMeteoResponse = {
@@ -26,6 +33,9 @@ const DEFAULT_VIEW: ViewMode = 'list';
 let currentRange: RangeOption = DEFAULT_RANGE;
 let currentView: ViewMode = DEFAULT_VIEW;
 let cachedDays: Day[] = [];
+let compactCalendarEnabled = isCompactCalendar();
+let modalOverlay: HTMLDivElement | null = null;
+let selectedCalendarCell: HTMLElement | null = null;
 
 const WEEKDAY_LABELS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
@@ -88,6 +98,24 @@ const createCompactTemperaturePill = (value: number, variant: 'max' | 'min', lab
   return pill;
 };
 
+const createLabeledTemperaturePill = (value: number, variant: 'max' | 'min', label: 'H' | 'L') => {
+  const pill = document.createElement('span');
+  pill.className = `pill ${variant}`;
+  const { bg, fg } = getTempPillColors(value);
+  pill.style.backgroundColor = bg;
+  pill.style.color = fg;
+  pill.textContent = formatModalTemperatureLabel(label, value);
+  return pill;
+};
+
+const createHeatBar = (value: number) => {
+  const bar = document.createElement('div');
+  bar.className = 'heat-bar';
+  const { bg } = getTempPillColors(value);
+  bar.style.backgroundColor = bg;
+  return bar;
+};
+
 const updateActiveRange = (range: RangeOption) => {
   rangeButtons.forEach((button) => {
     const value = Number(button.dataset.range);
@@ -108,10 +136,78 @@ const updateActiveView = (view: ViewMode) => {
 
 const showView = (view: ViewMode) => {
   currentView = view;
+  if (currentView !== 'calendar') {
+    closeDayModal();
+  }
   updateActiveView(currentView);
   const isListView = currentView === 'list';
   listSection?.classList.toggle('hidden', !isListView);
   calendarSection?.classList.toggle('hidden', isListView);
+};
+
+const handleEscapeClose = (event: KeyboardEvent) => {
+  if (event.key === 'Escape') {
+    closeDayModal();
+  }
+};
+
+const closeDayModal = () => {
+  if (modalOverlay) {
+    modalOverlay.remove();
+    modalOverlay = null;
+  }
+  if (selectedCalendarCell) {
+    selectedCalendarCell.classList.remove('selected');
+    selectedCalendarCell = null;
+  }
+  document.removeEventListener('keydown', handleEscapeClose);
+};
+
+const openDayModal = (day: Day, cell: HTMLElement) => {
+  closeDayModal();
+
+  selectedCalendarCell = cell;
+  selectedCalendarCell.classList.add('selected');
+
+  modalOverlay = document.createElement('div');
+  modalOverlay.className = 'modal-overlay';
+
+  const sheet = document.createElement('div');
+  sheet.className = 'bottom-sheet';
+
+  const header = document.createElement('div');
+  header.className = 'bottom-sheet__header';
+
+  const title = document.createElement('h4');
+  title.className = 'bottom-sheet__title';
+  title.textContent = formatFullDateWithWeekday(day.isoDate, LOCATION.timezone);
+
+  const closeButton = document.createElement('button');
+  closeButton.type = 'button';
+  closeButton.className = 'close-button';
+  closeButton.setAttribute('aria-label', 'Close');
+  closeButton.textContent = '×';
+  closeButton.addEventListener('click', closeDayModal);
+
+  header.append(title, closeButton);
+
+  const pillRow = document.createElement('div');
+  pillRow.className = 'pill-row';
+  const maxPill = createLabeledTemperaturePill(day.maxC, 'max', 'H');
+  const minPill = createLabeledTemperaturePill(day.minC, 'min', 'L');
+  pillRow.append(maxPill, minPill);
+
+  sheet.append(header, pillRow);
+
+  modalOverlay.appendChild(sheet);
+  modalOverlay.addEventListener('click', (event) => {
+    if (event.target === modalOverlay) {
+      closeDayModal();
+    }
+  });
+
+  document.addEventListener('keydown', handleEscapeClose);
+  document.body.appendChild(modalOverlay);
 };
 
 const buildRows = (days: Day[]): TemperatureRow[] =>
@@ -199,6 +295,7 @@ const renderListView = (days: Day[]) => {
 
 const renderCalendarView = (days: Day[]) => {
   if (!calendarSection) return;
+  closeDayModal();
   calendarSection.innerHTML = '';
 
   if (!days.length) {
@@ -215,6 +312,7 @@ const renderCalendarView = (days: Day[]) => {
     month: 'long',
     year: 'numeric'
   });
+  const useCompactCalendar = compactCalendarEnabled;
 
   monthGroups.forEach(({ monthKey, days: monthDays }) => {
     const [year, month] = monthKey.split('-').map(Number);
@@ -253,13 +351,28 @@ const renderCalendarView = (days: Day[]) => {
       dayNumber.className = 'day-number';
       dayNumber.textContent = day.dayOfMonth.toString();
 
-      const pillStack = document.createElement('div');
-      pillStack.className = 'pill-stack';
-      const maxPill = createCompactTemperaturePill(day.maxC, 'max', 'H');
-      const minPill = createCompactTemperaturePill(day.minC, 'min', 'L');
-      pillStack.append(maxPill, minPill);
+      if (useCompactCalendar) {
+        cell.classList.add('compact');
+        const heatStack = document.createElement('div');
+        heatStack.className = 'heat-stack';
+        const maxHeatBar = createHeatBar(day.maxC);
+        maxHeatBar.classList.add('max');
+        const minHeatBar = createHeatBar(day.minC);
+        minHeatBar.classList.add('min');
+        heatStack.append(maxHeatBar, minHeatBar);
 
-      cell.append(dayNumber, pillStack);
+        cell.append(dayNumber, heatStack);
+        cell.addEventListener('click', () => openDayModal(day, cell));
+      } else {
+        const pillStack = document.createElement('div');
+        pillStack.className = 'pill-stack';
+        const maxPill = createCompactTemperaturePill(day.maxC, 'max', 'H');
+        const minPill = createCompactTemperaturePill(day.minC, 'min', 'L');
+        pillStack.append(maxPill, minPill);
+
+        cell.append(dayNumber, pillStack);
+      }
+
       gridEl.appendChild(cell);
     });
 
@@ -275,6 +388,17 @@ const renderForCurrentView = () => {
   }
 
   renderCalendarView(cachedDays);
+};
+
+const handleCompactViewportChange = () => {
+  const nextCompact = isCompactCalendar();
+  if (nextCompact === compactCalendarEnabled) return;
+  compactCalendarEnabled = nextCompact;
+  closeDayModal();
+
+  if (currentView === 'calendar') {
+    renderCalendarView(cachedDays);
+  }
 };
 
 const fetchTemperatures = async (range: RangeOption) => {
@@ -336,6 +460,10 @@ viewButtons.forEach((button) => {
     renderForCurrentView();
   });
 });
+
+const compactMediaQuery = window.matchMedia(COMPACT_CALENDAR_QUERY);
+compactMediaQuery.addEventListener('change', handleCompactViewportChange);
+window.addEventListener('resize', handleCompactViewportChange);
 
 showView(DEFAULT_VIEW);
 updateActiveRange(DEFAULT_RANGE);

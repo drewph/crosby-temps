@@ -1,5 +1,11 @@
 import { describe, expect, it } from 'vitest';
-import { formatDateWithWeekday, formatLastUpdated, formatTemperature } from './formatters';
+import {
+  formatDateWithWeekday,
+  formatFullDateWithWeekday,
+  formatLastUpdated,
+  formatModalTemperatureLabel,
+  formatTemperature
+} from './formatters';
 
 describe('formatDateWithWeekday', () => {
   it('returns the weekday and date string using the provided timezone', () => {
@@ -40,5 +46,19 @@ describe('formatTemperature', () => {
   it('returns a dash for non-numeric values', () => {
     expect(formatTemperature(Number.NaN)).toBe('–');
     expect(formatTemperature(Number.POSITIVE_INFINITY)).toBe('–');
+  });
+});
+
+describe('formatFullDateWithWeekday', () => {
+  it('returns the full date string in en-GB format with weekday', () => {
+    const formatted = formatFullDateWithWeekday('2025-12-30', 'Europe/London');
+    expect(formatted).toBe('Tuesday, 30 December 2025');
+  });
+});
+
+describe('formatModalTemperatureLabel', () => {
+  it('formats labels for modal pills', () => {
+    expect(formatModalTemperatureLabel('H', 6)).toBe('H 6°');
+    expect(formatModalTemperatureLabel('L', -1.4)).toBe('L -1°');
   });
 });

@@ -335,6 +335,10 @@ td.col-temp {
   box-shadow: 0 4px 12px rgba(15, 23, 42, 0.06);
 }
 
+.calendar-cell.compact {
+  cursor: pointer;
+}
+
 .calendar-cell.empty {
   background: #f8fafc;
   color: #cbd5e1;
@@ -348,6 +352,21 @@ td.col-temp {
   color: #0f172a;
 }
 
+.heat-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: auto;
+}
+
+.heat-bar {
+  height: 7px;
+  border-radius: 9999px;
+  width: 100%;
+  background: #cbd5e1;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35), 0 1px 2px rgba(15, 23, 42, 0.12);
+}
+
 .pill-stack {
   display: flex;
   flex-direction: column;
@@ -358,6 +377,68 @@ td.col-temp {
 .pill.compact {
   padding: 4px 8px;
   font-size: 12px;
+}
+
+.calendar-cell.selected {
+  outline: 2px solid #0ea5e9;
+  outline-offset: -4px;
+  box-shadow: 0 0 0 2px rgba(14, 165, 233, 0.2);
+}
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.35);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 0.75rem;
+  z-index: 50;
+}
+
+.bottom-sheet {
+  width: min(520px, 100%);
+  background: #fff;
+  border-radius: 18px 18px 12px 12px;
+  padding: 1rem 1.2rem 1.3rem;
+  box-shadow: 0 -10px 30px rgba(15, 23, 42, 0.35);
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.bottom-sheet__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+
+.bottom-sheet__title {
+  margin: 0;
+  font-size: 1rem;
+  color: #0f172a;
+}
+
+.close-button {
+  border: 1px solid #e2e8f0;
+  background: #f8fafc;
+  border-radius: 9999px;
+  padding: 0.35rem 0.75rem;
+  font-weight: 800;
+  color: #0f172a;
+  cursor: pointer;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6);
+}
+
+.close-button:hover {
+  background: #e2e8f0;
+}
+
+.pill-row {
+  display: flex;
+  gap: 0.6rem;
+  flex-wrap: wrap;
 }
 
 .calendar-empty {
@@ -451,5 +532,20 @@ td.col-temp {
 
   .day-number {
     font-size: 0.95rem;
+  }
+}
+
+@media (max-width: 420px) {
+  .calendar-cell {
+    min-height: 68px;
+    padding: 0.45rem 0.4rem;
+  }
+
+  .heat-bar {
+    height: 6px;
+  }
+
+  .bottom-sheet {
+    padding-inline: 1rem;
   }
 }
