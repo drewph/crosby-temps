@@ -44,6 +44,19 @@ export const formatDateWithWeekday = (dateString: string, timeZone: string): For
   };
 };
 
+export const formatFullDateWithWeekday = (dateString: string, timeZone: string): string => {
+  const date = new Date(`${dateString}T12:00:00Z`);
+  const formatter = new Intl.DateTimeFormat('en-GB', {
+    timeZone,
+    weekday: 'long',
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric'
+  });
+
+  return formatter.format(date);
+};
+
 export const formatTemperature = (temperature: number): string => {
   const rounded = getRoundedTemperature(temperature);
   if (Number.isNaN(rounded)) {
@@ -52,3 +65,6 @@ export const formatTemperature = (temperature: number): string => {
 
   return rounded.toString();
 };
+
+export const formatModalTemperatureLabel = (label: 'H' | 'L', temperature: number): string =>
+  `${label} ${formatTemperature(temperature)}°`;
