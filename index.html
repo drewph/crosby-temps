@@ -22,15 +22,19 @@
       </header>
 
       <main>
-        <div class="controls">
+        <div class="controls" aria-label="Data controls">
           <div class="range-buttons" role="group" aria-label="Quick ranges">
             <button class="range-button active" data-range="7" type="button">Last 7</button>
             <button class="range-button" data-range="30" type="button">Last 30</button>
             <button class="range-button" data-range="60" type="button">Last 60</button>
           </div>
+          <div class="view-toggle" role="group" aria-label="View mode">
+            <button class="view-button active" data-view="list" type="button">List</button>
+            <button class="view-button" data-view="calendar" type="button">Calendar</button>
+          </div>
         </div>
 
-        <section class="data-card">
+        <section class="data-card" id="list-view">
           <div class="table-wrapper">
             <table id="temperatures" aria-live="polite">
               <thead>
@@ -45,6 +49,8 @@
           </div>
           <div id="card-list" class="card-list" aria-live="polite"></div>
         </section>
+
+        <section class="data-card hidden" id="calendar-view" aria-live="polite"></section>
       </main>
     </div>
     <script type="module" src="/src/main.ts"></script>
