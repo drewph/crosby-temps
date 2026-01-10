@@ -253,11 +253,23 @@ tbody tr:hover {
   pointer-events: none;
 }
 
+.temp-card .card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.6rem;
+  margin-bottom: 0.4rem;
+}
+
+.temp-card .card-square {
+  flex-shrink: 0;
+}
+
 .temp-card .date {
   display: flex;
   align-items: flex-start;
   gap: 0.2rem;
-  margin: 0 0 0.4rem;
+  margin: 0;
 }
 
 .temp-card .temperatures {
@@ -281,9 +293,47 @@ tbody tr:hover {
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.25), 0 1px 2px rgba(16, 42, 67, 0.1);
 }
 
+.sq {
+  --sq-size: 28px;
+  width: var(--sq-size);
+  height: var(--sq-size);
+  border-radius: 8px;
+  background: var(--hi, #e2e8f0);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: inset 0 0 0 1px rgba(15, 23, 42, 0.16), 0 1px 2px rgba(15, 23, 42, 0.12);
+}
+
+.sq__inner {
+  width: 56%;
+  height: 56%;
+  border-radius: 6px;
+  background: var(--lo, #f1f5f9);
+  box-shadow: inset 0 0 0 1px rgba(15, 23, 42, 0.12);
+}
+
+.sq--sm {
+  --sq-size: 24px;
+}
+
+.sq--md {
+  --sq-size: 28px;
+}
+
+.sq--lg {
+  --sq-size: 44px;
+}
+
 th.col-temp,
 td.col-temp {
   text-align: center;
+}
+
+th.col-square,
+td.col-square {
+  text-align: center;
+  width: 72px;
 }
 
 .hidden {
@@ -333,6 +383,17 @@ td.col-temp {
   flex-direction: column;
   gap: 0.4rem;
   box-shadow: 0 4px 12px rgba(15, 23, 42, 0.06);
+}
+
+.calendar-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.4rem;
+}
+
+.calendar-square {
+  flex-shrink: 0;
 }
 
 .calendar-cell.compact {
@@ -418,6 +479,10 @@ td.col-temp {
   margin: 0;
   font-size: 1rem;
   color: #0f172a;
+}
+
+.bottom-sheet__square {
+  align-self: center;
 }
 
 .close-button {
@@ -539,6 +604,10 @@ td.col-temp {
   .calendar-cell {
     min-height: 68px;
     padding: 0.45rem 0.4rem;
+  }
+
+  .calendar-cell.compact .sq {
+    --sq-size: 22px;
   }
 
   .heat-bar {
