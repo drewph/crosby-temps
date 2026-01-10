@@ -601,9 +601,48 @@ td.col-square {
 }
 
 @media (max-width: 420px) {
+  .calendar-weekdays,
+  .calendar-grid {
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+  }
+
   .calendar-cell {
     min-height: 68px;
     padding: 0.45rem 0.4rem;
+  }
+
+  .calendar-cell.compact {
+    overflow: hidden;
+  }
+
+  .calendar-cell.compact .dayCell__inner {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: flex-start;
+    gap: 4px;
+    min-width: 0;
+  }
+
+  .calendar-cell.compact .dayNum {
+    font-size: 0.85rem;
+    font-weight: 800;
+    color: #0f172a;
+  }
+
+  .calendar-cell.compact .miniBars {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    width: 100%;
+    min-width: 0;
+  }
+
+  .calendar-cell.compact .miniBar {
+    height: 7px;
+    border-radius: 999px;
+    width: 100%;
+    max-width: 100%;
   }
 
   .calendar-cell.compact .sq {
