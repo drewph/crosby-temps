@@ -108,12 +108,19 @@ const createLabeledTemperaturePill = (value: number, variant: 'max' | 'min', lab
   return pill;
 };
 
-const createHeatBar = (value: number) => {
-  const bar = document.createElement('div');
-  bar.className = 'heat-bar';
-  const { bg } = getTempPillColors(value);
-  bar.style.backgroundColor = bg;
-  return bar;
+const createTemperatureSquare = (max: number, min: number, size: 'sm' | 'md' | 'lg' = 'md') => {
+  const square = document.createElement('div');
+  square.className = `sq sq--${size}`;
+  const { bg: hi } = getTempPillColors(max);
+  const { bg: lo } = getTempPillColors(min);
+  square.style.setProperty('--hi', hi);
+  square.style.setProperty('--lo', lo);
+
+  const inner = document.createElement('div');
+  inner.className = 'sq__inner';
+  square.appendChild(inner);
+
+  return square;
 };
 
 const updateActiveRange = (range: RangeOption) => {
@@ -197,7 +204,10 @@ const openDayModal = (day: Day, cell: HTMLElement) => {
   const minPill = createLabeledTemperaturePill(day.minC, 'min', 'L');
   pillRow.append(maxPill, minPill);
 
-  sheet.append(header, pillRow);
+  const square = createTemperatureSquare(day.maxC, day.minC, 'lg');
+  square.classList.add('bottom-sheet__square');
+
+  sheet.append(header, square, pillRow);
 
   modalOverlay.appendChild(sheet);
   modalOverlay.addEventListener('click', (event) => {
@@ -249,10 +259,14 @@ const renderTableRows = (rows: TemperatureRow[]) => {
       return cell;
     };
 
+    const squareCell = document.createElement('td');
+    squareCell.className = 'col-square';
+    squareCell.appendChild(createTemperatureSquare(max, min, 'sm'));
+
     const maxTempCell = createTemperatureCell(max, 'Max', 'max');
     const minTempCell = createTemperatureCell(min, 'Min', 'min');
 
-    row.append(dateCell, maxTempCell, minTempCell);
+    row.append(dateCell, squareCell, maxTempCell, minTempCell);
     tableBody.appendChild(row);
   });
 };
@@ -266,6 +280,8 @@ const renderCards = (rows: TemperatureRow[]) => {
     card.className = 'temp-card';
 
     const { weekday, date: formattedDate } = formatDateWithWeekday(date, LOCATION.timezone);
+    const headerRow = document.createElement('div');
+    headerRow.className = 'card-header';
     const dateRow = document.createElement('div');
     dateRow.className = 'date date-stack';
     const weekdayEl = document.createElement('span');
@@ -276,13 +292,17 @@ const renderCards = (rows: TemperatureRow[]) => {
     dayEl.textContent = formattedDate;
     dateRow.append(weekdayEl, dayEl);
 
+    const square = createTemperatureSquare(max, min, 'md');
+    square.classList.add('card-square');
+    headerRow.append(dateRow, square);
+
     const tempsRow = document.createElement('div');
     tempsRow.className = 'temperatures';
     const maxPill = createTemperaturePill(max, 'Max', 'max');
     const minPill = createTemperaturePill(min, 'Min', 'min');
 
     tempsRow.append(maxPill, minPill);
-    card.append(dateRow, tempsRow);
+    card.append(headerRow, tempsRow);
     cardList.appendChild(card);
   });
 };
@@ -351,17 +371,16 @@ const renderCalendarView = (days: Day[]) => {
       dayNumber.className = 'day-number';
       dayNumber.textContent = day.dayOfMonth.toString();
 
+      const topRow = document.createElement('div');
+      topRow.className = 'calendar-top';
+
+      const square = createTemperatureSquare(day.maxC, day.minC, 'sm');
+      square.classList.add('calendar-square');
+      topRow.append(dayNumber, square);
+
       if (useCompactCalendar) {
         cell.classList.add('compact');
-        const heatStack = document.createElement('div');
-        heatStack.className = 'heat-stack';
-        const maxHeatBar = createHeatBar(day.maxC);
-        maxHeatBar.classList.add('max');
-        const minHeatBar = createHeatBar(day.minC);
-        minHeatBar.classList.add('min');
-        heatStack.append(maxHeatBar, minHeatBar);
-
-        cell.append(dayNumber, heatStack);
+        cell.append(topRow);
         cell.addEventListener('click', () => openDayModal(day, cell));
       } else {
         const pillStack = document.createElement('div');
@@ -370,7 +389,7 @@ const renderCalendarView = (days: Day[]) => {
         const minPill = createCompactTemperaturePill(day.minC, 'min', 'L');
         pillStack.append(maxPill, minPill);
 
-        cell.append(dayNumber, pillStack);
+        cell.append(topRow, pillStack);
       }
 
       gridEl.appendChild(cell);
