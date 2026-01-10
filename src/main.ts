@@ -367,22 +367,44 @@ const renderCalendarView = (days: Day[]) => {
         return;
       }
 
-      const dayNumber = document.createElement('div');
-      dayNumber.className = 'day-number';
-      dayNumber.textContent = day.dayOfMonth.toString();
-
-      const topRow = document.createElement('div');
-      topRow.className = 'calendar-top';
-
-      const square = createTemperatureSquare(day.maxC, day.minC, 'sm');
-      square.classList.add('calendar-square');
-      topRow.append(dayNumber, square);
-
       if (useCompactCalendar) {
         cell.classList.add('compact');
-        cell.append(topRow);
+        const inner = document.createElement('div');
+        inner.className = 'dayCell__inner';
+
+        const dayNumber = document.createElement('div');
+        dayNumber.className = 'dayNum';
+        dayNumber.textContent = day.dayOfMonth.toString();
+
+        const miniBars = document.createElement('div');
+        miniBars.className = 'miniBars';
+
+        const hiBar = document.createElement('div');
+        hiBar.className = 'miniBar miniBar--hi';
+        const { bg: hiColor } = getTempPillColors(day.maxC);
+        hiBar.style.backgroundColor = hiColor;
+
+        const loBar = document.createElement('div');
+        loBar.className = 'miniBar miniBar--lo';
+        const { bg: loColor } = getTempPillColors(day.minC);
+        loBar.style.backgroundColor = loColor;
+
+        miniBars.append(hiBar, loBar);
+        inner.append(dayNumber, miniBars);
+        cell.append(inner);
         cell.addEventListener('click', () => openDayModal(day, cell));
       } else {
+        const dayNumber = document.createElement('div');
+        dayNumber.className = 'day-number';
+        dayNumber.textContent = day.dayOfMonth.toString();
+
+        const topRow = document.createElement('div');
+        topRow.className = 'calendar-top';
+
+        const square = createTemperatureSquare(day.maxC, day.minC, 'sm');
+        square.classList.add('calendar-square');
+        topRow.append(dayNumber, square);
+
         const pillStack = document.createElement('div');
         pillStack.className = 'pill-stack';
         const maxPill = createCompactTemperaturePill(day.maxC, 'max', 'H');
