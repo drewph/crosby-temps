@@ -34,6 +34,28 @@
           </div>
         </div>
 
+        <section class="moon-card" aria-labelledby="moon-title">
+          <div class="moon-card__header">
+            <div>
+              <p class="moon-card__eyebrow">Moon phases</p>
+              <h2 id="moon-title">Moon outlook</h2>
+            </div>
+            <p class="moon-card__meta" id="moon-source"></p>
+          </div>
+          <div class="moon-grid">
+            <article class="moon-stat">
+              <span class="moon-stat__label">Current phase</span>
+              <strong class="moon-stat__value" id="moon-phase">Loading…</strong>
+              <span class="moon-stat__subtext" id="moon-illumination"></span>
+            </article>
+            <article class="moon-stat moon-stat--highlight">
+              <span class="moon-stat__label">Next full moon</span>
+              <strong class="moon-stat__value" id="next-full-moon">Loading…</strong>
+              <span class="moon-stat__subtext" id="next-full-moon-countdown"></span>
+            </article>
+          </div>
+        </section>
+
         <section class="data-card" id="list-view">
           <div class="table-wrapper">
             <table id="temperatures" aria-live="polite">
