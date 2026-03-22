@@ -1,126 +1,122 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import {
-  buildUsnoMoonPhasesUrl,
+  buildFarmSenseMoonUrl,
   fetchMoonPhaseOutlook,
   getDaysUntilNextFullMoon,
-  getDateStringInTimeZone,
   getFallbackMoonPhase,
-  getMoonPhaseNameFromDegrees,
-  parseUsnoMoonPhaseEntry,
-  parseUsnoMoonPhases,
-  getNextFullMoonFromPhases
+  getMoonPhaseOutlookFallback,
+  getUnixTimestampsForNextDays,
+  parseFarmSenseMoonPhases
 } from './moon';
-
-const LOCATION = {
-  latitude: 54.18031473227185,
-  longitude: -4.54729408020627,
-  timezone: 'Europe/London'
-};
 
 afterEach(() => {
   vi.unstubAllGlobals();
   vi.restoreAllMocks();
 });
 
-describe('buildUsnoMoonPhasesUrl', () => {
-  it('builds a USNO moon phases URL with a start date and number of phases', () => {
-    const url = buildUsnoMoonPhasesUrl({ date: '2026-03-22', numPhases: 12 });
+describe('buildFarmSenseMoonUrl', () => {
+  it('builds a moon phase URL with one d[] parameter per timestamp', () => {
+    const url = buildFarmSenseMoonUrl({ timestamps: [1719273600, 1719360000] });
 
-    expect(url.origin + url.pathname).toBe('https://aa.usno.navy.mil/api/moon/phases/date');
-    expect(url.searchParams.get('date')).toBe('2026-03-22');
-    expect(url.searchParams.get('nump')).toBe('12');
+    expect(url.origin + url.pathname).toBe('https://api.farmsense.net/v1/moonphases/');
+    expect(url.searchParams.getAll('d[]')).toEqual(['1719273600', '1719360000']);
   });
 });
 
-describe('phase helpers', () => {
-  it('formats Crosby dates in the configured timezone', () => {
-    expect(getDateStringInTimeZone(new Date('2026-04-02T02:12:00Z'), LOCATION.timezone)).toBe('2026-04-02');
-  });
+describe('getUnixTimestampsForNextDays', () => {
+  it('returns one midday UTC timestamp per day', () => {
+    const timestamps = getUnixTimestampsForNextDays(new Date('2026-03-22T08:00:00Z'), 3);
 
-  it('maps phase angles to readable labels', () => {
-    expect(getMoonPhaseNameFromDegrees(0)).toBe('New Moon');
-    expect(getMoonPhaseNameFromDegrees(90)).toBe('First Quarter');
-    expect(getMoonPhaseNameFromDegrees(180)).toBe('Full Moon');
-    expect(getMoonPhaseNameFromDegrees(270)).toBe('Last Quarter');
+    expect(timestamps).toEqual([1774180800, 1774267200, 1774353600]);
   });
+});
 
-  it('parses a USNO phase entry into a local-date summary', () => {
-    const summary = parseUsnoMoonPhaseEntry(
+describe('parseFarmSenseMoonPhases', () => {
+  it('normalizes the API response into app-friendly moon summaries', () => {
+    const phases = parseFarmSenseMoonPhases([
       {
-        phase: 'Full Moon',
-        year: 2026,
-        month: 4,
-        day: 2,
-        time: '02:12'
-      },
-      LOCATION.timezone
-    );
+        Error: 0,
+        TargetDate: '1774180800',
+        Phase: 'Waxing Cresent',
+        Illumination: 0.31,
+        Age: 6.1
+      }
+    ]);
 
-    expect(summary?.isoDate).toBe('2026-04-02');
-    expect(summary?.phase).toBe('Full Moon');
-    expect(summary?.eventDate?.toISOString()).toBe('2026-04-02T02:12:00.000Z');
-  });
-
-  it('finds the next future full moon from the USNO response', () => {
-    const phases = parseUsnoMoonPhases(
+    expect(phases).toEqual([
       {
-        phasedata: [
-          { phase: 'First Quarter', year: 2026, month: 3, day: 26, time: '15:00' },
-          { phase: 'Full Moon', year: 2026, month: 4, day: 2, time: '02:12' },
-          { phase: 'Full Moon', year: 2026, month: 5, day: 1, time: '11:30' }
-        ]
-      },
-      LOCATION.timezone
-    );
+        isoDate: '2026-03-22',
+        phase: 'Waxing Crescent',
+        illumination: 0.31,
+        ageDays: 6.1,
+        source: 'api'
+      }
+    ]);
+  });
+});
 
-    const nextFullMoon = getNextFullMoonFromPhases(phases, new Date('2026-03-22T08:00:00Z'));
+describe('getFallbackMoonPhase', () => {
+  it('calculates a fallback phase and illumination', () => {
+    const phase = getFallbackMoonPhase(new Date('2026-03-22T00:00:00Z'));
 
-    expect(nextFullMoon?.isoDate).toBe('2026-04-02');
-    expect(nextFullMoon?.eventDate?.toISOString()).toBe('2026-04-02T02:12:00.000Z');
+    expect(phase.isoDate).toBe('2026-03-22');
+    expect(phase.phase.length).toBeGreaterThan(0);
+    expect(phase.illumination).toBeGreaterThanOrEqual(0);
+    expect(phase.illumination).toBeLessThanOrEqual(1);
+    expect(phase.source).toBe('fallback');
+  });
+});
+
+describe('getMoonPhaseOutlookFallback', () => {
+  it('finds the next full moon from the fallback calculation', () => {
+    const outlook = getMoonPhaseOutlookFallback(new Date('2026-03-22T00:00:00Z'));
+
+    expect(outlook.current.isoDate).toBe('2026-03-22');
+    expect(outlook.nextFullMoon).toBeDefined();
+    expect(getDaysUntilNextFullMoon(outlook.current, outlook.nextFullMoon)).toBeGreaterThanOrEqual(0);
   });
 });
 
 describe('fetchMoonPhaseOutlook', () => {
-  it('uses the exact USNO full moon event so Crosby resolves to 2 April 2026', async () => {
-    const fetchMock = vi.fn().mockResolvedValue({
-      ok: true,
-      json: async () => ({
-        phasedata: [
-          { phase: 'First Quarter', year: 2026, month: 3, day: 26, time: '15:00' },
-          { phase: 'Full Moon', year: 2026, month: 4, day: 2, time: '02:12' },
-          { phase: 'Last Quarter', year: 2026, month: 4, day: 9, time: '18:45' }
+  it('uses the API response when fetch succeeds', async () => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn().mockResolvedValue({
+        ok: true,
+        json: async () => [
+          {
+            Error: 0,
+            TargetDate: '1774267200',
+            Phase: 'Waxing Cresent',
+            Illumination: 0.44,
+            Age: 7.4
+          },
+          {
+            Error: 0,
+            TargetDate: '1774872000',
+            Phase: 'Full Moon',
+            Illumination: 1,
+            Age: 14.8
+          }
         ]
       })
-    });
+    );
 
-    vi.stubGlobal('fetch', fetchMock);
+    const outlook = await fetchMoonPhaseOutlook(new Date('2026-03-22T00:00:00Z'), 10);
 
-    const outlook = await fetchMoonPhaseOutlook(new Date('2026-03-22T08:00:00Z'), LOCATION);
-
-    expect(fetchMock).toHaveBeenCalledTimes(1);
-    expect(fetchMock.mock.calls[0]?.[0].toString()).toContain('date=2026-03-22');
     expect(outlook.source).toBe('api');
-    expect(outlook.nextFullMoon?.isoDate).toBe('2026-04-02');
-    expect(outlook.nextFullMoon?.eventDate?.toISOString()).toBe('2026-04-02T02:12:00.000Z');
-    expect(getDaysUntilNextFullMoon(outlook.current, outlook.nextFullMoon)).toBe(11);
+    expect(outlook.current.phase).toBe('Waxing Crescent');
+    expect(outlook.nextFullMoon?.phase).toBe('Full Moon');
   });
 
-  it('falls back to local calculations when the API fails', async () => {
+  it('falls back to local calculations when fetch fails', async () => {
     vi.stubGlobal('fetch', vi.fn().mockRejectedValue(new Error('network error')));
     vi.spyOn(console, 'warn').mockImplementation(() => undefined);
 
-    const outlook = await fetchMoonPhaseOutlook(new Date('2026-03-22T08:00:00Z'), LOCATION);
+    const outlook = await fetchMoonPhaseOutlook(new Date('2026-03-22T00:00:00Z'), 45);
 
     expect(outlook.source).toBe('fallback');
     expect(outlook.current.source).toBe('fallback');
     expect(outlook.nextFullMoon).toBeDefined();
-  });
-
-  it('produces a bounded fallback moon summary', () => {
-    const phase = getFallbackMoonPhase(new Date('2026-03-22T08:00:00Z'), LOCATION.timezone);
-
-    expect(phase.phase.length).toBeGreaterThan(0);
-    expect(phase.illumination).toBeGreaterThanOrEqual(0);
-    expect(phase.illumination).toBeLessThanOrEqual(1);
   });
 });
