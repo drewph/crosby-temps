@@ -68,3 +68,15 @@ export const formatTemperature = (temperature: number): string => {
 
 export const formatModalTemperatureLabel = (label: 'H' | 'L', temperature: number): string =>
   `${label} ${formatTemperature(temperature)}°`;
+
+export const formatPercent = (value: number): string => `${Math.round(value * 100)}%`;
+
+export const formatShortDate = (dateString: string, timeZone: string): string => {
+  const date = new Date(`${dateString}T12:00:00Z`);
+  return new Intl.DateTimeFormat('en-GB', {
+    timeZone,
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric'
+  }).format(date);
+};
