@@ -103,7 +103,7 @@ const renderMoonOutlook = async () => {
   setMoonStatus('Checking moon phase…');
 
   const today = new Date();
-  const outlook = await fetchMoonPhaseOutlook(today, LOCATION);
+  const outlook = await fetchMoonPhaseOutlook(today);
   moonPhaseElement.textContent = outlook.current.phase;
   moonIlluminationElement.textContent = `Illumination: ${formatPercent(outlook.current.illumination)}`;
 
@@ -122,9 +122,7 @@ const renderMoonOutlook = async () => {
   }
 
   setMoonStatus(
-    outlook.source === 'api'
-      ? 'Location-aware MET Norway moon data for Crosby.'
-      : 'Approximate moon-phase fallback for Crosby.'
+    outlook.source === 'api' ? 'Live moon-phase API (no key).' : 'Approximate moon-phase fallback.'
   );
 };
 

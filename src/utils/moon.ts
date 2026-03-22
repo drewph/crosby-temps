@@ -1,220 +1,133 @@
 const SYNODIC_MONTH_DAYS = 29.530588853;
 const KNOWN_NEW_MOON_MS = Date.UTC(2000, 0, 6, 18, 14, 0);
-const DEFAULT_FULL_MOON_SEARCH_WINDOW_DAYS = 2;
-const FULL_MOON_DEGREES = 180;
+const FULL_MOON_AGE_DAYS = SYNODIC_MONTH_DAYS / 2;
+const DEFAULT_LOOKAHEAD_DAYS = 45;
 
-export interface MoonLocationOptions {
-  latitude: number;
-  longitude: number;
-  timezone: string;
+export interface MoonApiOptions {
+  timestamps: number[];
 }
 
-export interface MoonApiOptions extends MoonLocationOptions {
-  date: string;
-  offset: string;
-}
-
-export type MetNoMoonResponse = {
-  properties?: {
-    moonphase?: {
-      value?: number;
-    };
-  };
+export type FarmSenseMoonPhase = {
+  Error?: number;
+  ErrorMsg?: string;
+  TargetDate?: string;
+  Moon?: string[];
+  Index?: number;
+  Age?: number;
+  Phase?: string;
+  Illumination?: number;
 };
 
 export type MoonPhaseSummary = {
   isoDate: string;
   phase: string;
   illumination: number;
-  phaseAngle: number;
+  ageDays: number;
   source: 'api' | 'fallback';
 };
 
-const getDatePartsInTimeZone = (date: Date, timeZone: string) => {
-  const formatter = new Intl.DateTimeFormat('en-CA', {
-    timeZone,
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit'
-  });
+const normalizePhaseName = (phase: string): string => phase.replace(/Cresent/g, 'Crescent').trim();
 
-  const parts = formatter.formatToParts(date).reduce<Record<string, string>>((acc, part) => {
-    if (part.type === 'year' || part.type === 'month' || part.type === 'day') {
-      acc[part.type] = part.value;
-    }
-    return acc;
-  }, {});
-
-  return {
-    year: Number(parts.year),
-    month: Number(parts.month),
-    day: Number(parts.day)
-  };
+const getPhaseNameFromAge = (ageDays: number): string => {
+  if (ageDays < 1.84566) return 'New Moon';
+  if (ageDays < 5.53699) return 'Waxing Crescent';
+  if (ageDays < 9.22831) return 'First Quarter';
+  if (ageDays < 12.91963) return 'Waxing Gibbous';
+  if (ageDays < 16.61096) return 'Full Moon';
+  if (ageDays < 20.30228) return 'Waning Gibbous';
+  if (ageDays < 23.99361) return 'Last Quarter';
+  if (ageDays < 27.68493) return 'Waning Crescent';
+  return 'New Moon';
 };
-
-export const getDateStringInTimeZone = (date: Date, timeZone: string): string => {
-  const { year, month, day } = getDatePartsInTimeZone(date, timeZone);
-  return `${year}-${`${month}`.padStart(2, '0')}-${`${day}`.padStart(2, '0')}`;
-};
-
-export const getTimeZoneOffset = (date: Date, timeZone: string): string => {
-  const parts = new Intl.DateTimeFormat('en-GB', {
-    timeZone,
-    timeZoneName: 'longOffset',
-    hour: '2-digit',
-    minute: '2-digit'
-  }).formatToParts(date);
-
-  const offsetName = parts.find((part) => part.type === 'timeZoneName')?.value ?? 'GMT';
-  if (offsetName === 'GMT') {
-    return '+00:00';
-  }
-
-  return offsetName.replace('GMT', '');
-};
-
-export const buildMetNoMoonUrl = ({ latitude, longitude, date, offset }: MoonApiOptions): URL => {
-  const url = new URL('https://api.met.no/weatherapi/sunrise/3.0/moon');
-  url.searchParams.set('lat', latitude.toString());
-  url.searchParams.set('lon', longitude.toString());
-  url.searchParams.set('date', date);
-  url.searchParams.set('offset', offset);
-  return url;
-};
-
-const normalizeDegrees = (degrees: number): number => {
-  const normalized = degrees % 360;
-  return normalized >= 0 ? normalized : normalized + 360;
-};
-
-export const getMoonPhaseNameFromDegrees = (degrees: number): string => {
-  const normalized = normalizeDegrees(degrees);
-  const tolerance = 1;
-
-  if (normalized <= tolerance || normalized >= 360 - tolerance) return 'New Moon';
-  if (Math.abs(normalized - 90) <= tolerance) return 'First Quarter';
-  if (Math.abs(normalized - 180) <= tolerance) return 'Full Moon';
-  if (Math.abs(normalized - 270) <= tolerance) return 'Last Quarter';
-  if (normalized < 90) return 'Waxing Crescent';
-  if (normalized < 180) return 'Waxing Gibbous';
-  if (normalized < 270) return 'Waning Gibbous';
-  return 'Waning Crescent';
-};
-
-export const getIlluminationFromDegrees = (degrees: number): number =>
-  (1 - Math.cos((normalizeDegrees(degrees) * Math.PI) / 180)) / 2;
 
 const normalizeLunarAge = (ageDays: number): number => {
   const mod = ageDays % SYNODIC_MONTH_DAYS;
   return mod >= 0 ? mod : mod + SYNODIC_MONTH_DAYS;
 };
 
-const getFallbackDegrees = (date: Date): number =>
-  (normalizeLunarAge((date.getTime() - KNOWN_NEW_MOON_MS) / 86400000) / SYNODIC_MONTH_DAYS) * 360;
+export const buildFarmSenseMoonUrl = ({ timestamps }: MoonApiOptions): URL => {
+  if (!timestamps.length) {
+    throw new Error('At least one timestamp is required');
+  }
 
-export const getFallbackMoonPhase = (date: Date, timeZone: string): MoonPhaseSummary => {
-  const phaseAngle = normalizeDegrees(getFallbackDegrees(date));
+  const url = new URL('https://api.farmsense.net/v1/moonphases/');
+  timestamps.forEach((timestamp) => {
+    url.searchParams.append('d[]', Math.floor(timestamp).toString());
+  });
+  return url;
+};
+
+export const getUnixTimestampsForNextDays = (startDate: Date, days: number): number[] => {
+  if (days < 1) {
+    throw new Error('Days must be at least 1');
+  }
+
+  return Array.from({ length: days }, (_, index) => {
+    const date = new Date(Date.UTC(startDate.getUTCFullYear(), startDate.getUTCMonth(), startDate.getUTCDate() + index, 12));
+    return Math.floor(date.getTime() / 1000);
+  });
+};
+
+export const getFallbackMoonPhase = (date: Date): MoonPhaseSummary => {
+  const ageDays = normalizeLunarAge((date.getTime() - KNOWN_NEW_MOON_MS) / 86400000);
+  const illumination = (1 - Math.cos((2 * Math.PI * ageDays) / SYNODIC_MONTH_DAYS)) / 2;
 
   return {
-    isoDate: getDateStringInTimeZone(date, timeZone),
-    phase: getMoonPhaseNameFromDegrees(phaseAngle),
-    illumination: getIlluminationFromDegrees(phaseAngle),
-    phaseAngle,
+    isoDate: date.toISOString().slice(0, 10),
+    phase: getPhaseNameFromAge(ageDays),
+    illumination,
+    ageDays,
     source: 'fallback'
   };
 };
 
-export const parseMetNoMoonResponse = (
-  payload: MetNoMoonResponse,
-  date: Date,
-  timeZone: string
-): MoonPhaseSummary => {
-  const fallback = getFallbackMoonPhase(date, timeZone);
-  const phaseAngle = payload.properties?.moonphase?.value;
+export const parseFarmSenseMoonPhases = (payload: FarmSenseMoonPhase[]): MoonPhaseSummary[] =>
+  payload
+    .filter((item) => item.Error === 0 && item.TargetDate && item.Phase)
+    .map((item) => {
+      const timestampMs = Number(item.TargetDate) * 1000;
+      const fallback = getFallbackMoonPhase(new Date(timestampMs));
+      return {
+        isoDate: new Date(timestampMs).toISOString().slice(0, 10),
+        phase: normalizePhaseName(item.Phase ?? fallback.phase),
+        illumination:
+          typeof item.Illumination === 'number' && Number.isFinite(item.Illumination)
+            ? item.Illumination
+            : fallback.illumination,
+        ageDays: typeof item.Age === 'number' && Number.isFinite(item.Age) ? item.Age : fallback.ageDays,
+        source: 'api' as const
+      };
+    });
 
-  if (typeof phaseAngle !== 'number' || !Number.isFinite(phaseAngle)) {
-    return fallback;
-  }
+export const findNextFullMoon = (phases: MoonPhaseSummary[]): MoonPhaseSummary | undefined =>
+  phases.find((phase) => phase.phase === 'Full Moon');
 
-  return {
-    isoDate: getDateStringInTimeZone(date, timeZone),
-    phase: getMoonPhaseNameFromDegrees(phaseAngle),
-    illumination: getIlluminationFromDegrees(phaseAngle),
-    phaseAngle: normalizeDegrees(phaseAngle),
-    source: 'api'
-  };
-};
-
-export const addDaysToDateString = (dateString: string, days: number): string => {
-  const [year, month, day] = dateString.split('-').map(Number);
-  const date = new Date(Date.UTC(year, (month ?? 1) - 1, day ?? 1));
-  date.setUTCDate(date.getUTCDate() + days);
-  return date.toISOString().slice(0, 10);
-};
-
-export const getDateRangeAround = (dateString: string, radius: number): string[] =>
-  Array.from({ length: radius * 2 + 1 }, (_, index) => addDaysToDateString(dateString, index - radius));
-
-export const getMoonPhaseOutlookFallback = (startDate: Date, timeZone: string) => {
-  const current = getFallbackMoonPhase(startDate, timeZone);
-  const approxDaysUntilFullMoon = Math.round(
-    ((FULL_MOON_DEGREES - current.phaseAngle + 360) % 360) / (360 / SYNODIC_MONTH_DAYS)
-  );
-  const nextFullMoon = getFallbackMoonPhase(
-    new Date(new Date(startDate).setUTCDate(startDate.getUTCDate() + approxDaysUntilFullMoon)),
-    timeZone
+export const getMoonPhaseOutlookFallback = (startDate: Date, lookaheadDays = DEFAULT_LOOKAHEAD_DAYS) => {
+  const phases = getUnixTimestampsForNextDays(startDate, lookaheadDays).map((timestamp) =>
+    getFallbackMoonPhase(new Date(timestamp * 1000))
   );
 
   return {
-    current,
-    nextFullMoon
+    current: phases[0],
+    nextFullMoon: findNextFullMoon(phases)
   };
 };
 
-export const pickClosestToFullMoon = (phases: MoonPhaseSummary[]): MoonPhaseSummary | undefined =>
-  [...phases]
-    .sort((first, second) => {
-      const firstDelta = Math.abs(first.phaseAngle - FULL_MOON_DEGREES);
-      const secondDelta = Math.abs(second.phaseAngle - FULL_MOON_DEGREES);
-      if (firstDelta !== secondDelta) {
-        return firstDelta - secondDelta;
-      }
-      return first.isoDate.localeCompare(second.isoDate);
-    })
-    .at(0);
-
-const fetchMoonPhaseForDate = async (dateString: string, location: MoonLocationOptions) => {
-  const targetDate = new Date(`${dateString}T12:00:00Z`);
-  const offset = getTimeZoneOffset(targetDate, location.timezone);
-  const url = buildMetNoMoonUrl({
-    latitude: location.latitude,
-    longitude: location.longitude,
-    date: dateString,
-    offset
-  });
-
-  const response = await fetch(url.toString());
-  if (!response.ok) {
-    throw new Error(`Moon phase request failed with status ${response.status}`);
-  }
-
-  const payload = (await response.json()) as MetNoMoonResponse;
-  return parseMetNoMoonResponse(payload, targetDate, location.timezone);
-};
-
-export const fetchMoonPhaseOutlook = async (startDate: Date, location: MoonLocationOptions) => {
-  const fallback = getMoonPhaseOutlookFallback(startDate, location.timezone);
-  const todayDateString = getDateStringInTimeZone(startDate, location.timezone);
-  const approxFullMoonDate = fallback.nextFullMoon.isoDate;
-  const candidateDates = getDateRangeAround(approxFullMoonDate, DEFAULT_FULL_MOON_SEARCH_WINDOW_DAYS);
+export const fetchMoonPhaseOutlook = async (startDate: Date, lookaheadDays = DEFAULT_LOOKAHEAD_DAYS) => {
+  const fallback = getMoonPhaseOutlookFallback(startDate, lookaheadDays);
+  const timestamps = getUnixTimestampsForNextDays(startDate, lookaheadDays);
+  const url = buildFarmSenseMoonUrl({ timestamps });
 
   try {
-    const [current, ...candidatePhases] = await Promise.all([
-      fetchMoonPhaseForDate(todayDateString, location),
-      ...candidateDates.map((dateString) => fetchMoonPhaseForDate(dateString, location))
-    ]);
+    const response = await fetch(url.toString());
+    if (!response.ok) {
+      throw new Error(`Moon phase request failed with status ${response.status}`);
+    }
 
-    const nextFullMoon = pickClosestToFullMoon(candidatePhases) ?? fallback.nextFullMoon;
+    const payload = (await response.json()) as FarmSenseMoonPhase[];
+    const phases = parseFarmSenseMoonPhases(payload);
+    const current = phases[0] ?? fallback.current;
+    const nextFullMoon = findNextFullMoon(phases) ?? fallback.nextFullMoon;
 
     return {
       current,
@@ -238,4 +151,13 @@ export const getDaysUntilNextFullMoon = (current: MoonPhaseSummary, nextFullMoon
   const currentDate = Date.parse(`${current.isoDate}T00:00:00Z`);
   const fullMoonDate = Date.parse(`${nextFullMoon.isoDate}T00:00:00Z`);
   return Math.round((fullMoonDate - currentDate) / 86400000);
+};
+
+export const getApproximateDaysUntilFullMoon = (date: Date): number => {
+  const currentAge = normalizeLunarAge((date.getTime() - KNOWN_NEW_MOON_MS) / 86400000);
+  const daysUntil = currentAge <= FULL_MOON_AGE_DAYS
+    ? FULL_MOON_AGE_DAYS - currentAge
+    : SYNODIC_MONTH_DAYS - currentAge + FULL_MOON_AGE_DAYS;
+
+  return Math.round(daysUntil);
 };
