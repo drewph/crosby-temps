@@ -1,6 +1,6 @@
 # Crosby Temperatures
 
-A small static site that lists the last week of max/min daily temperatures for Crosby, Isle of Man using the Open-Meteo API.
+A small static site that lists the last week of max/min daily temperatures for Crosby, Isle of Man using the Open-Meteo API. It now also shows the current moon phase and the next full moon using the FarmSense moon-phase API, with a local calculation fallback if the moon API is unavailable.
 
 ## Development
 
