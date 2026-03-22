@@ -105,26 +105,27 @@ main {
 }
 
 .moon-card {
-  border: 1px solid rgba(191, 219, 254, 0.8);
-  border-radius: 18px;
-  padding: 1.2rem;
+  align-self: flex-start;
+  width: min(100%, 18rem);
+  border: 1px solid rgba(191, 219, 254, 0.72);
+  border-radius: 16px;
+  padding: 0.8rem;
   background: linear-gradient(145deg, rgba(15, 23, 42, 0.96), rgba(30, 41, 59, 0.92));
   color: #e2e8f0;
-  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.18);
+  box-shadow: 0 12px 28px rgba(15, 23, 42, 0.16);
 }
 
 .moon-card__header {
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
   align-items: flex-start;
-  gap: 1rem;
-  margin-bottom: 1rem;
-  flex-wrap: wrap;
+  gap: 0.45rem;
+  margin-bottom: 0.7rem;
 }
 
 .moon-card__header h2 {
-  margin: 0.2rem 0 0;
-  font-size: 1.35rem;
+  margin: 0.15rem 0 0;
+  font-size: 1rem;
 }
 
 .moon-card__eyebrow {
@@ -132,30 +133,31 @@ main {
   color: #93c5fd;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  font-size: 0.75rem;
+  font-size: 0.62rem;
   font-weight: 700;
 }
 
 .moon-card__meta {
   margin: 0;
   color: #cbd5e1;
-  font-size: 0.95rem;
+  font-size: 0.74rem;
+  line-height: 1.35;
 }
 
 .moon-grid {
   display: grid;
-  gap: 0.9rem;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 0.55rem;
+  grid-template-columns: 1fr;
 }
 
 .moon-stat {
-  border-radius: 16px;
-  padding: 1rem;
+  border-radius: 12px;
+  padding: 0.7rem 0.75rem;
   background: rgba(148, 163, 184, 0.12);
   border: 1px solid rgba(148, 163, 184, 0.18);
   display: flex;
   flex-direction: column;
-  gap: 0.35rem;
+  gap: 0.2rem;
 }
 
 .moon-stat--highlight {
@@ -164,7 +166,7 @@ main {
 }
 
 .moon-stat__label {
-  font-size: 0.8rem;
+  font-size: 0.68rem;
   text-transform: uppercase;
   letter-spacing: 0.08em;
   color: #bfdbfe;
@@ -172,13 +174,14 @@ main {
 }
 
 .moon-stat__value {
-  font-size: 1.35rem;
+  font-size: 1rem;
   line-height: 1.2;
 }
 
 .moon-stat__subtext {
   color: #cbd5e1;
-  font-size: 0.95rem;
+  font-size: 0.76rem;
+  line-height: 1.35;
 }
 
 .range-buttons {
@@ -633,6 +636,34 @@ td.col-square {
     padding: 1rem;
   }
 
+  .moon-card {
+    width: min(100%, 13.5rem);
+    padding: 0.65rem;
+    border-radius: 14px;
+  }
+
+  .moon-card__header {
+    gap: 0.35rem;
+    margin-bottom: 0.55rem;
+  }
+
+  .moon-card__header h2 {
+    font-size: 0.92rem;
+  }
+
+  .moon-card__meta,
+  .moon-stat__subtext {
+    font-size: 0.7rem;
+  }
+
+  .moon-stat {
+    padding: 0.6rem 0.65rem;
+  }
+
+  .moon-stat__value {
+    font-size: 0.88rem;
+  }
+
   .data-card {
     padding: 0.85rem;
     display: block;
@@ -724,6 +755,27 @@ td.col-square {
 
   .calendar-cell.compact .sq {
     --sq-size: 22px;
+  }
+
+  .moon-card {
+    width: min(100%, 11.75rem);
+    padding: 0.55rem;
+  }
+
+  .moon-card__header h2 {
+    font-size: 0.86rem;
+  }
+
+  .moon-stat {
+    padding: 0.52rem 0.56rem;
+  }
+
+  .moon-stat__label {
+    font-size: 0.62rem;
+  }
+
+  .moon-stat__value {
+    font-size: 0.82rem;
   }
 
   .heat-bar {
