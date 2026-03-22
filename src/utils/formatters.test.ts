@@ -4,6 +4,7 @@ import {
   formatFullDateWithWeekday,
   formatLastUpdated,
   formatModalTemperatureLabel,
+  formatShortDateFromTimestamp,
   formatTemperature
 } from './formatters';
 
@@ -60,5 +61,12 @@ describe('formatModalTemperatureLabel', () => {
   it('formats labels for modal pills', () => {
     expect(formatModalTemperatureLabel('H', 6)).toBe('H 6°');
     expect(formatModalTemperatureLabel('L', -1.4)).toBe('L -1°');
+  });
+});
+
+describe('formatShortDateFromTimestamp', () => {
+  it('formats event timestamps in the supplied timezone', () => {
+    const formatted = formatShortDateFromTimestamp(Date.parse('2026-04-02T02:12:00Z'), 'Europe/London');
+    expect(formatted).toBe('2 Apr 2026');
   });
 });

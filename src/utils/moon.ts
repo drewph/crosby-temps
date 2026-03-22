@@ -2,6 +2,11 @@ const SYNODIC_MONTH_DAYS = 29.530588853;
 const KNOWN_NEW_MOON_MS = Date.UTC(2000, 0, 6, 18, 14, 0);
 const FULL_MOON_AGE_DAYS = SYNODIC_MONTH_DAYS / 2;
 const DEFAULT_LOOKAHEAD_DAYS = 45;
+const DAY_MS = 86400000;
+const HOUR_MS = 3600000;
+const SYNODIC_MONTH_MS = SYNODIC_MONTH_DAYS * DAY_MS;
+const KNOWN_FULL_MOON_MS = KNOWN_NEW_MOON_MS + FULL_MOON_AGE_DAYS * DAY_MS;
+const FULL_MOON_REFINEMENT_HOURS = 36;
 
 export interface MoonApiOptions {
   timestamps: number[];
@@ -19,11 +24,18 @@ export type FarmSenseMoonPhase = {
 };
 
 export type MoonPhaseSummary = {
+  timestampMs: number;
   isoDate: string;
   phase: string;
   illumination: number;
   ageDays: number;
   source: 'api' | 'fallback';
+};
+
+export type MoonEventSummary = {
+  timestampMs: number;
+  phase: 'Full Moon';
+  source: 'api' | 'calculated';
 };
 
 const normalizePhaseName = (phase: string): string => phase.replace(/Cresent/g, 'Crescent').trim();
@@ -45,6 +57,63 @@ const normalizeLunarAge = (ageDays: number): number => {
   return mod >= 0 ? mod : mod + SYNODIC_MONTH_DAYS;
 };
 
+const extractDateParts = (date: Date, timeZone: string): { year: number; month: number; day: number } => {
+  const formatter = new Intl.DateTimeFormat('en-GB', {
+    timeZone,
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit'
+  });
+
+  const parts = formatter.formatToParts(date).reduce<Record<string, string>>((acc, part) => {
+    if (part.type === 'year' || part.type === 'month' || part.type === 'day') {
+      acc[part.type] = part.value;
+    }
+    return acc;
+  }, {});
+
+  const year = Number(parts.year);
+  const month = Number(parts.month);
+  const day = Number(parts.day);
+
+  if (Number.isNaN(year) || Number.isNaN(month) || Number.isNaN(day)) {
+    throw new Error('Unable to extract date parts for timezone');
+  }
+
+  return { year, month, day };
+};
+
+const getDateKeyInTimeZone = (date: Date, timeZone: string): string => {
+  const { year, month, day } = extractDateParts(date, timeZone);
+  return `${year}-${`${month}`.padStart(2, '0')}-${`${day}`.padStart(2, '0')}`;
+};
+
+const fetchFarmSenseMoonPhases = async (timestamps: number[]): Promise<MoonPhaseSummary[]> => {
+  const response = await fetch(buildFarmSenseMoonUrl({ timestamps }).toString());
+  if (!response.ok) {
+    throw new Error(`Moon phase request failed with status ${response.status}`);
+  }
+
+  const payload = (await response.json()) as FarmSenseMoonPhase[];
+  return parseFarmSenseMoonPhases(payload);
+};
+
+const buildHourlyTimestampsAround = (
+  centerTimestampMs: number,
+  hoursBefore = FULL_MOON_REFINEMENT_HOURS,
+  hoursAfter = FULL_MOON_REFINEMENT_HOURS
+): number[] =>
+  Array.from({ length: hoursBefore + hoursAfter + 1 }, (_, index) => {
+    const offsetHours = index - hoursBefore;
+    return Math.floor((centerTimestampMs + offsetHours * HOUR_MS) / 1000);
+  });
+
+const toMoonEventSummary = (phase: MoonPhaseSummary, source: MoonEventSummary['source']): MoonEventSummary => ({
+  timestampMs: phase.timestampMs,
+  phase: 'Full Moon',
+  source
+});
+
 export const buildFarmSenseMoonUrl = ({ timestamps }: MoonApiOptions): URL => {
   if (!timestamps.length) {
     throw new Error('At least one timestamp is required');
@@ -57,22 +126,25 @@ export const buildFarmSenseMoonUrl = ({ timestamps }: MoonApiOptions): URL => {
   return url;
 };
 
-export const getUnixTimestampsForNextDays = (startDate: Date, days: number): number[] => {
+export const getUnixTimestampsForNextDays = (startDate: Date, days: number, timeZone = 'UTC'): number[] => {
   if (days < 1) {
     throw new Error('Days must be at least 1');
   }
 
+  const { year, month, day } = extractDateParts(startDate, timeZone);
+
   return Array.from({ length: days }, (_, index) => {
-    const date = new Date(Date.UTC(startDate.getUTCFullYear(), startDate.getUTCMonth(), startDate.getUTCDate() + index, 12));
+    const date = new Date(Date.UTC(year, month - 1, day + index, 12));
     return Math.floor(date.getTime() / 1000);
   });
 };
 
 export const getFallbackMoonPhase = (date: Date): MoonPhaseSummary => {
-  const ageDays = normalizeLunarAge((date.getTime() - KNOWN_NEW_MOON_MS) / 86400000);
+  const ageDays = normalizeLunarAge((date.getTime() - KNOWN_NEW_MOON_MS) / DAY_MS);
   const illumination = (1 - Math.cos((2 * Math.PI * ageDays) / SYNODIC_MONTH_DAYS)) / 2;
 
   return {
+    timestampMs: date.getTime(),
     isoDate: date.toISOString().slice(0, 10),
     phase: getPhaseNameFromAge(ageDays),
     illumination,
@@ -88,6 +160,7 @@ export const parseFarmSenseMoonPhases = (payload: FarmSenseMoonPhase[]): MoonPha
       const timestampMs = Number(item.TargetDate) * 1000;
       const fallback = getFallbackMoonPhase(new Date(timestampMs));
       return {
+        timestampMs,
         isoDate: new Date(timestampMs).toISOString().slice(0, 10),
         phase: normalizePhaseName(item.Phase ?? fallback.phase),
         illumination:
@@ -99,41 +172,81 @@ export const parseFarmSenseMoonPhases = (payload: FarmSenseMoonPhase[]): MoonPha
       };
     });
 
-export const findNextFullMoon = (phases: MoonPhaseSummary[]): MoonPhaseSummary | undefined =>
+export const findDailyFullMoonCandidate = (phases: MoonPhaseSummary[]): MoonPhaseSummary | undefined =>
   phases.find((phase) => phase.phase === 'Full Moon');
 
-export const getMoonPhaseOutlookFallback = (startDate: Date, lookaheadDays = DEFAULT_LOOKAHEAD_DAYS) => {
-  const phases = getUnixTimestampsForNextDays(startDate, lookaheadDays).map((timestamp) =>
+export const findClosestFullMoonPhase = (phases: MoonPhaseSummary[]): MoonPhaseSummary | undefined =>
+  [...phases]
+    .sort((left, right) => {
+      if (right.illumination !== left.illumination) {
+        return right.illumination - left.illumination;
+      }
+
+      const ageDelta = Math.abs(left.ageDays - FULL_MOON_AGE_DAYS) - Math.abs(right.ageDays - FULL_MOON_AGE_DAYS);
+      if (ageDelta !== 0) {
+        return ageDelta;
+      }
+
+      return left.timestampMs - right.timestampMs;
+    })[0];
+
+export const getNextFullMoon = (startDate: Date): MoonEventSummary => {
+  const cyclesSinceKnownFullMoon = Math.ceil((startDate.getTime() - KNOWN_FULL_MOON_MS - 1) / SYNODIC_MONTH_MS);
+  const timestampMs = KNOWN_FULL_MOON_MS + Math.max(cyclesSinceKnownFullMoon, 0) * SYNODIC_MONTH_MS;
+
+  return {
+    timestampMs,
+    phase: 'Full Moon',
+    source: 'calculated'
+  };
+};
+
+export const getMoonPhaseOutlookFallback = (
+  startDate: Date,
+  lookaheadDays = DEFAULT_LOOKAHEAD_DAYS,
+  timeZone = 'UTC'
+) => {
+  const phases = getUnixTimestampsForNextDays(startDate, lookaheadDays, timeZone).map((timestamp) =>
     getFallbackMoonPhase(new Date(timestamp * 1000))
   );
 
   return {
     current: phases[0],
-    nextFullMoon: findNextFullMoon(phases)
+    nextFullMoon: getNextFullMoon(startDate)
   };
 };
 
-export const fetchMoonPhaseOutlook = async (startDate: Date, lookaheadDays = DEFAULT_LOOKAHEAD_DAYS) => {
-  const fallback = getMoonPhaseOutlookFallback(startDate, lookaheadDays);
-  const timestamps = getUnixTimestampsForNextDays(startDate, lookaheadDays);
-  const url = buildFarmSenseMoonUrl({ timestamps });
+export const fetchMoonPhaseOutlook = async (
+  startDate: Date,
+  lookaheadDays = DEFAULT_LOOKAHEAD_DAYS,
+  timeZone = 'UTC'
+) => {
+  const fallback = getMoonPhaseOutlookFallback(startDate, lookaheadDays, timeZone);
+  const timestamps = getUnixTimestampsForNextDays(startDate, lookaheadDays, timeZone);
 
   try {
-    const response = await fetch(url.toString());
-    if (!response.ok) {
-      throw new Error(`Moon phase request failed with status ${response.status}`);
-    }
-
-    const payload = (await response.json()) as FarmSenseMoonPhase[];
-    const phases = parseFarmSenseMoonPhases(payload);
+    const phases = await fetchFarmSenseMoonPhases(timestamps);
     const current = phases[0] ?? fallback.current;
-    const nextFullMoon = findNextFullMoon(phases) ?? fallback.nextFullMoon;
+    const candidate = findDailyFullMoonCandidate(phases);
+    const refinementCenterMs = candidate?.timestampMs ?? fallback.nextFullMoon.timestampMs;
 
-    return {
-      current,
-      nextFullMoon,
-      source: 'api' as const
-    };
+    try {
+      const refinementPhases = await fetchFarmSenseMoonPhases(buildHourlyTimestampsAround(refinementCenterMs));
+      const refinedFullMoon = findClosestFullMoonPhase(refinementPhases);
+
+      return {
+        current,
+        nextFullMoon: refinedFullMoon ? toMoonEventSummary(refinedFullMoon, 'api') : fallback.nextFullMoon,
+        source: 'api' as const
+      };
+    } catch (error) {
+      console.warn('Falling back to the calculated full-moon event.', error);
+      return {
+        current,
+        nextFullMoon: fallback.nextFullMoon,
+        source: 'api' as const
+      };
+    }
   } catch (error) {
     console.warn('Falling back to locally calculated moon phases.', error);
     return {
@@ -143,18 +256,22 @@ export const fetchMoonPhaseOutlook = async (startDate: Date, lookaheadDays = DEF
   }
 };
 
-export const getDaysUntilNextFullMoon = (current: MoonPhaseSummary, nextFullMoon?: MoonPhaseSummary): number | null => {
+export const getDaysUntilNextFullMoon = (
+  startDate: Date,
+  nextFullMoon: MoonEventSummary | undefined,
+  timeZone = 'UTC'
+): number | null => {
   if (!nextFullMoon) {
     return null;
   }
 
-  const currentDate = Date.parse(`${current.isoDate}T00:00:00Z`);
-  const fullMoonDate = Date.parse(`${nextFullMoon.isoDate}T00:00:00Z`);
-  return Math.round((fullMoonDate - currentDate) / 86400000);
+  const currentDate = Date.parse(`${getDateKeyInTimeZone(startDate, timeZone)}T00:00:00Z`);
+  const fullMoonDate = Date.parse(`${getDateKeyInTimeZone(new Date(nextFullMoon.timestampMs), timeZone)}T00:00:00Z`);
+  return Math.round((fullMoonDate - currentDate) / DAY_MS);
 };
 
 export const getApproximateDaysUntilFullMoon = (date: Date): number => {
-  const currentAge = normalizeLunarAge((date.getTime() - KNOWN_NEW_MOON_MS) / 86400000);
+  const currentAge = normalizeLunarAge((date.getTime() - KNOWN_NEW_MOON_MS) / DAY_MS);
   const daysUntil = currentAge <= FULL_MOON_AGE_DAYS
     ? FULL_MOON_AGE_DAYS - currentAge
     : SYNODIC_MONTH_DAYS - currentAge + FULL_MOON_AGE_DAYS;
