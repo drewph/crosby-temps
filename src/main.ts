@@ -6,7 +6,7 @@ import {
   formatLastUpdated,
   formatModalTemperatureLabel,
   formatPercent,
-  formatShortDate,
+  formatShortDateFromTimestamp,
   formatTemperature
 } from './utils/formatters';
 import { buildOpenMeteoUrl } from './utils/openMeteo';
@@ -103,13 +103,13 @@ const renderMoonOutlook = async () => {
   setMoonStatus('Checking moon phase…');
 
   const today = new Date();
-  const outlook = await fetchMoonPhaseOutlook(today);
+  const outlook = await fetchMoonPhaseOutlook(today, undefined, LOCATION.timezone);
   moonPhaseElement.textContent = outlook.current.phase;
   moonIlluminationElement.textContent = `Illumination: ${formatPercent(outlook.current.illumination)}`;
 
   if (outlook.nextFullMoon) {
-    nextFullMoonElement.textContent = formatShortDate(outlook.nextFullMoon.isoDate, LOCATION.timezone);
-    const daysUntil = getDaysUntilNextFullMoon(outlook.current, outlook.nextFullMoon);
+    nextFullMoonElement.textContent = formatShortDateFromTimestamp(outlook.nextFullMoon.timestampMs, LOCATION.timezone);
+    const daysUntil = getDaysUntilNextFullMoon(today, outlook.nextFullMoon, LOCATION.timezone);
     nextFullMoonCountdownElement.textContent =
       daysUntil === null
         ? 'Countdown unavailable'
@@ -122,7 +122,9 @@ const renderMoonOutlook = async () => {
   }
 
   setMoonStatus(
-    outlook.source === 'api' ? 'Live moon-phase API (no key).' : 'Approximate moon-phase fallback.'
+    outlook.source === 'api'
+      ? 'Live moon-phase API for the current phase; next full moon calculated locally.'
+      : 'Approximate local moon calculations.'
   );
 };
 

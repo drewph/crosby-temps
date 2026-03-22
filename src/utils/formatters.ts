@@ -80,3 +80,11 @@ export const formatShortDate = (dateString: string, timeZone: string): string =>
     year: 'numeric'
   }).format(date);
 };
+
+export const formatShortDateFromTimestamp = (timestampMs: number, timeZone: string): string =>
+  new Intl.DateTimeFormat('en-GB', {
+    timeZone,
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric'
+  }).format(new Date(timestampMs));
