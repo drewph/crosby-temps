@@ -504,8 +504,8 @@ const fetchTemperatures = async (range: RangeOption) => {
     startDate: formatDate(start),
     endDate: formatDate(end)
   };
+  const url = buildOpenMeteoUrl(options);
   const archiveUrl = buildOpenMeteoArchiveUrl(options);
-  const forecastUrl = buildOpenMeteoUrl(options);
 
   try {
     const response = await fetch(archiveUrl.toString());
@@ -518,14 +518,16 @@ const fetchTemperatures = async (range: RangeOption) => {
       throw new Error('Unexpected response format');
     }
 
-    const hasArchiveNulls = data.daily.temperature_2m_max.some((v) => v === null) || data.daily.temperature_2m_min.some((v) => v === null);
+    const expectedDayCount = Math.max(1, Math.round((end.getTime() - start.getTime()) / 86400000) + 1);
+    const hasForecastCoverage = data.daily.time.length >= expectedDayCount;
+    const hasForecastNulls = data.daily.temperature_2m_max.some((v) => v === null) || data.daily.temperature_2m_min.some((v) => v === null);
 
-    if (hasArchiveNulls) {
-      const forecastResponse = await fetch(forecastUrl.toString());
-      if (forecastResponse.ok) {
-        const forecastData: OpenMeteoResponse = await forecastResponse.json();
-        if (forecastData.daily?.time && forecastData.daily.temperature_2m_max && forecastData.daily.temperature_2m_min) {
-          data.daily = forecastData.daily;
+    if (!hasForecastCoverage || hasForecastNulls) {
+      const archiveResponse = await fetch(archiveUrl.toString());
+      if (archiveResponse.ok) {
+        const archiveData: OpenMeteoResponse = await archiveResponse.json();
+        if (archiveData.daily?.time && archiveData.daily.temperature_2m_max && archiveData.daily.temperature_2m_min) {
+          data.daily = archiveData.daily;
         }
       }
     }
