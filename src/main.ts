@@ -508,9 +508,9 @@ const fetchTemperatures = async (range: RangeOption) => {
   const archiveUrl = buildOpenMeteoArchiveUrl(options);
 
   try {
-    const response = await fetch(url.toString());
+    const response = await fetch(archiveUrl.toString());
     if (!response.ok) {
-      throw new Error(`Request failed with status ${response.status}`);
+      throw new Error(`Archive request failed with status ${response.status}`);
     }
 
     const data: OpenMeteoResponse = await response.json();
