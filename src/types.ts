@@ -1,7 +1,7 @@
 export type DailyResponse = {
   time: string[];
-  temperature_2m_max: number[];
-  temperature_2m_min: number[];
+  temperature_2m_max: Array<number | null>;
+  temperature_2m_min: Array<number | null>;
 };
 
 export type Day = {
