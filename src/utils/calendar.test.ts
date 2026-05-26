@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { buildMonthGrid, groupByMonthKey, mondayIndex } from './calendar';
+import { buildDays, buildMonthGrid, groupByMonthKey, mondayIndex } from './calendar';
 import { Day } from '../types';
 
 const createDay = (isoDate: string, dayOfMonth: number, monthKey: string): Day => ({
@@ -65,5 +65,20 @@ describe('groupByMonthKey', () => {
 
     expect(groups.map((group) => group.monthKey)).toEqual(['2024-05', '2024-06', '2024-07']);
     expect(groups.find((group) => group.monthKey === '2024-06')?.days.length).toBe(2);
+  });
+});
+
+describe('buildDays', () => {
+  it('drops entries with missing max or min values', () => {
+    const days = buildDays({
+      time: ['2024-05-01', '2024-05-02', '2024-05-03'],
+      temperature_2m_max: [17, null, 19],
+      temperature_2m_min: [9, 10, null]
+    });
+
+    expect(days).toHaveLength(1);
+    expect(days[0]?.isoDate).toBe('2024-05-01');
+    expect(days[0]?.maxC).toBe(17);
+    expect(days[0]?.minC).toBe(9);
   });
 });
