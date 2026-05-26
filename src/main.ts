@@ -9,7 +9,7 @@ import {
   formatShortDateFromTimestamp,
   formatTemperature
 } from './utils/formatters';
-import { buildOpenMeteoUrl } from './utils/openMeteo';
+import { buildOpenMeteoArchiveUrl, buildOpenMeteoUrl } from './utils/openMeteo';
 import { fetchMoonPhaseOutlook, getDaysUntilNextFullMoon } from './utils/moon';
 import { getTempPillColors } from './utils/temperatureBands';
 import { buildDays, buildMonthGrid, groupByMonthKey } from './utils/calendar';
@@ -497,23 +497,37 @@ const fetchTemperatures = async (range: RangeOption) => {
 
   const { start, end } = getLastNDaysRange(range, LOCATION.timezone);
 
-  const url = buildOpenMeteoUrl({
+  const options = {
     latitude: LOCATION.latitude,
     longitude: LOCATION.longitude,
     timezone: LOCATION.timezone,
     startDate: formatDate(start),
     endDate: formatDate(end)
-  });
+  };
+  const archiveUrl = buildOpenMeteoArchiveUrl(options);
+  const forecastUrl = buildOpenMeteoUrl(options);
 
   try {
-    const response = await fetch(url.toString());
+    const response = await fetch(archiveUrl.toString());
     if (!response.ok) {
-      throw new Error(`Request failed with status ${response.status}`);
+      throw new Error(`Archive request failed with status ${response.status}`);
     }
 
     const data: OpenMeteoResponse = await response.json();
     if (!data.daily || !data.daily.time || !data.daily.temperature_2m_max || !data.daily.temperature_2m_min) {
       throw new Error('Unexpected response format');
+    }
+
+    const hasArchiveNulls = data.daily.temperature_2m_max.some((v) => v === null) || data.daily.temperature_2m_min.some((v) => v === null);
+
+    if (hasArchiveNulls) {
+      const forecastResponse = await fetch(forecastUrl.toString());
+      if (forecastResponse.ok) {
+        const forecastData: OpenMeteoResponse = await forecastResponse.json();
+        if (forecastData.daily?.time && forecastData.daily.temperature_2m_max && forecastData.daily.temperature_2m_min) {
+          data.daily = forecastData.daily;
+        }
+      }
     }
 
     cachedDays = buildDays(data.daily);

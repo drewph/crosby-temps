@@ -22,9 +22,15 @@ const createDay = (isoDate: string, max: number, min: number): Day => {
 };
 
 export const buildDays = (daily: DailyResponse): Day[] => {
-  const days = daily.time.map((isoDate, index) =>
-    createDay(isoDate, daily.temperature_2m_max[index], daily.temperature_2m_min[index])
-  );
+  const days = daily.time.flatMap((isoDate, index) => {
+    const max = daily.temperature_2m_max[index];
+    const min = daily.temperature_2m_min[index];
+    if (!Number.isFinite(max) || !Number.isFinite(min)) {
+      return [];
+    }
+
+    return [createDay(isoDate, max, min)];
+  });
 
   return days.sort((first, second) => first.isoDate.localeCompare(second.isoDate));
 };

@@ -22,7 +22,24 @@ export const buildOpenMeteoUrl = ({
   url.searchParams.set('start_date', startDate);
   url.searchParams.set('end_date', endDate);
   url.searchParams.set('daily', DAILY_VARIABLES.join(','));
-  url.searchParams.set('models', 'ukmo_seamless');
+  url.searchParams.set('cell_selection', 'nearest');
+  return url;
+};
+
+export const buildOpenMeteoArchiveUrl = ({
+  latitude,
+  longitude,
+  timezone,
+  startDate,
+  endDate
+}: OpenMeteoOptions): URL => {
+  const url = new URL('https://archive-api.open-meteo.com/v1/archive');
+  url.searchParams.set('latitude', latitude.toString());
+  url.searchParams.set('longitude', longitude.toString());
+  url.searchParams.set('timezone', timezone);
+  url.searchParams.set('start_date', startDate);
+  url.searchParams.set('end_date', endDate);
+  url.searchParams.set('daily', DAILY_VARIABLES.join(','));
   url.searchParams.set('cell_selection', 'nearest');
   return url;
 };
