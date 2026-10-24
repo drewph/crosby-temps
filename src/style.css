@@ -552,7 +552,7 @@ td.col-square {
   flex-shrink: 0;
 }
 
-.calendar-cell.compact {
+.calendar-cell:not(.empty) {
   cursor: pointer;
 }
 
@@ -660,6 +660,7 @@ td.col-square {
   display: flex;
   gap: 0.6rem;
   flex-wrap: wrap;
+  justify-content: center;
 }
 
 .calendar-empty {
