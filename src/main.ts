@@ -301,6 +301,24 @@ const openDayModal = (day: Day, cell: HTMLElement) => {
   document.body.appendChild(modalOverlay);
 };
 
+const makeDayCellInteractive = (cell: HTMLElement, day: Day) => {
+  const label = `${formatFullDateWithWeekday(day.isoDate, LOCATION.timezone)}. High ${formatTemperature(
+    day.maxC
+  )} degrees Celsius, low ${formatTemperature(day.minC)} degrees.`;
+
+  cell.setAttribute('role', 'button');
+  cell.setAttribute('tabindex', '0');
+  cell.setAttribute('aria-label', label);
+
+  cell.addEventListener('click', () => openDayModal(day, cell));
+  cell.addEventListener('keydown', (event) => {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      openDayModal(day, cell);
+    }
+  });
+};
+
 const buildRows = (days: Day[]): TemperatureRow[] =>
   [...days]
     .sort((first, second) => Date.parse(second.isoDate) - Date.parse(first.isoDate))
@@ -461,7 +479,6 @@ const renderCalendarView = (days: Day[]) => {
 
         inner.append(dayNumber, square);
         cell.append(inner);
-        cell.addEventListener('click', () => openDayModal(day, cell));
       } else {
         const dayNumber = document.createElement('div');
         dayNumber.className = 'day-number';
@@ -483,6 +500,7 @@ const renderCalendarView = (days: Day[]) => {
         cell.append(topRow, pillStack);
       }
 
+      makeDayCellInteractive(cell, day);
       gridEl.appendChild(cell);
     });
 
