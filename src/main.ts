@@ -1,16 +1,19 @@
 import './style.css';
 import { formatDate, getLastNDaysRange } from './utils/dateRanges';
 import {
+  formatClockTime,
   formatDateWithWeekday,
+  formatDayMonth,
   formatFullDateWithWeekday,
-  formatLastUpdated,
   formatModalTemperatureLabel,
   formatPercent,
+  formatShortDate,
   formatShortDateFromTimestamp,
   formatTemperature
 } from './utils/formatters';
-import { buildOpenMeteoArchiveUrl, buildOpenMeteoUrl } from './utils/openMeteo';
+import { buildOpenMeteoArchiveUrl } from './utils/openMeteo';
 import { getDaysUntilNextFullMoon, getMoonPhaseOutlook } from './utils/moon';
+import { findMissingDates } from './utils/dataQuality';
 import { getTempPillColors, getTemperatureScale } from './utils/temperatureBands';
 import { buildDays, buildMonthGrid, groupByMonthKey } from './utils/calendar';
 import { COMPACT_CALENDAR_QUERY, isCompactCalendar } from './utils/responsive';
@@ -33,6 +36,8 @@ const LOCATION = {
 
 const DEFAULT_RANGE: RangeOption = 7;
 const DEFAULT_VIEW: ViewMode = 'list';
+const FETCH_TIMEOUT_MS = 8000;
+const MAX_LISTED_MISSING_DATES = 3;
 let currentRange: RangeOption = DEFAULT_RANGE;
 let currentView: ViewMode = DEFAULT_VIEW;
 let cachedDays: Day[] = [];
@@ -59,6 +64,7 @@ const nextFullMoonElement = document.getElementById('next-full-moon');
 const nextFullMoonCountdownElement = document.getElementById('next-full-moon-countdown');
 const moonSourceElement = document.getElementById('moon-source');
 const colourLegendList = document.getElementById('colour-legend');
+const dataNoticeElement = document.getElementById('data-notice');
 
 if (siteLogo) {
   siteLogo.src = `${import.meta.env.BASE_URL}logo.png`;
@@ -78,13 +84,32 @@ const setStatus = (message: string, isError = false) => {
   status.classList.toggle('error', isError);
 };
 
-const setLastUpdated = (date?: Date) => {
+const setDataNotice = (message = '') => {
+  if (!dataNoticeElement) return;
+  dataNoticeElement.textContent = message;
+  dataNoticeElement.hidden = message === '';
+};
+
+const setDataThrough = (latestIsoDate?: string) => {
   if (!lastUpdatedElement) return;
-  if (!date) {
-    lastUpdatedElement.textContent = '';
-    return;
-  }
-  lastUpdatedElement.textContent = `Last updated: ${formatLastUpdated(date, LOCATION.timezone)}`;
+  lastUpdatedElement.textContent = latestIsoDate
+    ? `Data through ${formatShortDate(latestIsoDate, LOCATION.timezone)} · checked ${formatClockTime(new Date(), LOCATION.timezone)}`
+    : '';
+};
+
+const getFetchSignal = (): AbortSignal | undefined =>
+  typeof AbortSignal !== 'undefined' && typeof AbortSignal.timeout === 'function'
+    ? AbortSignal.timeout(FETCH_TIMEOUT_MS)
+    : undefined;
+
+const isTimeoutError = (error: unknown): boolean =>
+  error instanceof DOMException && (error.name === 'TimeoutError' || error.name === 'AbortError');
+
+const formatMissingDateList = (dates: string[]): string => {
+  const listed = dates.slice(0, MAX_LISTED_MISSING_DATES).map((date) => formatDayMonth(date, LOCATION.timezone));
+  return dates.length > MAX_LISTED_MISSING_DATES
+    ? `${listed.join(', ')} and ${dates.length - MAX_LISTED_MISSING_DATES} more`
+    : listed.join(', ');
 };
 
 const setMoonStatus = (message = '') => {
@@ -499,9 +524,11 @@ const handleCompactViewportChange = () => {
 };
 
 const fetchTemperatures = async (range: RangeOption) => {
-  setStatus('Loading data...');
+  setStatus('Loading data…');
+  setDataNotice('');
 
   const { start, end } = getLastNDaysRange(range, LOCATION.timezone);
+  const expectedDayCount = Math.max(1, Math.round((end.getTime() - start.getTime()) / 86400000) + 1);
 
   const options = {
     latitude: LOCATION.latitude,
@@ -510,11 +537,10 @@ const fetchTemperatures = async (range: RangeOption) => {
     startDate: formatDate(start),
     endDate: formatDate(end)
   };
-  const url = buildOpenMeteoUrl(options);
   const archiveUrl = buildOpenMeteoArchiveUrl(options);
 
   try {
-    const response = await fetch(archiveUrl.toString());
+    const response = await fetch(archiveUrl.toString(), { signal: getFetchSignal() });
     if (!response.ok) {
       throw new Error(`Archive request failed with status ${response.status}`);
     }
@@ -524,27 +550,33 @@ const fetchTemperatures = async (range: RangeOption) => {
       throw new Error('Unexpected response format');
     }
 
-    const expectedDayCount = Math.max(1, Math.round((end.getTime() - start.getTime()) / 86400000) + 1);
-    const hasForecastCoverage = data.daily.time.length >= expectedDayCount;
-    const hasForecastNulls = data.daily.temperature_2m_max.some((v) => v === null) || data.daily.temperature_2m_min.some((v) => v === null);
-
-    if (!hasForecastCoverage || hasForecastNulls) {
-      const archiveResponse = await fetch(archiveUrl.toString());
-      if (archiveResponse.ok) {
-        const archiveData: OpenMeteoResponse = await archiveResponse.json();
-        if (archiveData.daily?.time && archiveData.daily.temperature_2m_max && archiveData.daily.temperature_2m_min) {
-          data.daily = archiveData.daily;
-        }
-      }
+    cachedDays = buildDays(data.daily);
+    if (!cachedDays.length) {
+      throw new Error('No usable temperature data in response');
     }
 
-    cachedDays = buildDays(data.daily);
     renderForCurrentView();
-    setLastUpdated(new Date());
+    setDataThrough(cachedDays[cachedDays.length - 1].isoDate);
+
+    const missingDates = findMissingDates(start, end, cachedDays.map((day) => day.isoDate));
+    setDataNotice(
+      missingDates.length
+        ? `No data for ${formatMissingDateList(missingDates)}. Showing ${cachedDays.length} of ${expectedDayCount} days.`
+        : ''
+    );
     setStatus('');
   } catch (error) {
     console.error(error);
-    setStatus('Unable to load weather data right now. Please try again later.', true);
+    cachedDays = [];
+    renderForCurrentView();
+    setDataThrough(undefined);
+    setDataNotice('');
+    setStatus(
+      isTimeoutError(error)
+        ? 'Weather data took too long to load. Please try again.'
+        : 'Unable to load weather data right now. Please try again later.',
+      true
+    );
   }
 };
 

@@ -1,9 +1,12 @@
 import { describe, expect, it } from 'vitest';
 import {
+  formatClockTime,
   formatDateWithWeekday,
+  formatDayMonth,
   formatFullDateWithWeekday,
   formatLastUpdated,
   formatModalTemperatureLabel,
+  formatShortDate,
   formatShortDateFromTimestamp,
   formatTemperature
 } from './formatters';
@@ -68,5 +71,23 @@ describe('formatShortDateFromTimestamp', () => {
   it('formats event timestamps in the supplied timezone', () => {
     const formatted = formatShortDateFromTimestamp(Date.parse('2026-04-02T02:12:00Z'), 'Europe/London');
     expect(formatted).toBe('2 Apr 2026');
+  });
+});
+
+describe('formatShortDate', () => {
+  it('formats an ISO date with the year in the supplied timezone', () => {
+    expect(formatShortDate('2026-10-23', 'Europe/London')).toBe('23 Oct 2026');
+  });
+});
+
+describe('formatDayMonth', () => {
+  it('formats an ISO date without the year', () => {
+    expect(formatDayMonth('2026-10-23', 'Europe/London')).toBe('23 Oct');
+  });
+});
+
+describe('formatClockTime', () => {
+  it('formats a timestamp as a 24-hour clock in the supplied timezone', () => {
+    expect(formatClockTime(new Date('2026-10-24T20:35:00Z'), 'Europe/London')).toBe('21:35');
   });
 });

@@ -81,6 +81,23 @@ export const formatShortDate = (dateString: string, timeZone: string): string =>
   }).format(date);
 };
 
+export const formatDayMonth = (dateString: string, timeZone: string): string => {
+  const date = new Date(`${dateString}T12:00:00Z`);
+  return new Intl.DateTimeFormat('en-GB', {
+    timeZone,
+    day: 'numeric',
+    month: 'short'
+  }).format(date);
+};
+
+export const formatClockTime = (date: Date, timeZone: string): string =>
+  new Intl.DateTimeFormat('en-GB', {
+    timeZone,
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: false
+  }).format(date);
+
 export const formatShortDateFromTimestamp = (timestampMs: number, timeZone: string): string =>
   new Intl.DateTimeFormat('en-GB', {
     timeZone,
