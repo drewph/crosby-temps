@@ -457,21 +457,9 @@ const renderCalendarView = (days: Day[]) => {
         dayNumber.className = 'dayNum';
         dayNumber.textContent = day.dayOfMonth.toString();
 
-        const miniBars = document.createElement('div');
-        miniBars.className = 'miniBars';
+        const square = createTemperatureSquare(day.maxC, day.minC, 'sm');
 
-        const hiBar = document.createElement('div');
-        hiBar.className = 'miniBar miniBar--hi';
-        const { bg: hiColor } = getTempPillColors(day.maxC);
-        hiBar.style.backgroundColor = hiColor;
-
-        const loBar = document.createElement('div');
-        loBar.className = 'miniBar miniBar--lo';
-        const { bg: loColor } = getTempPillColors(day.minC);
-        loBar.style.backgroundColor = loColor;
-
-        miniBars.append(hiBar, loBar);
-        inner.append(dayNumber, miniBars);
+        inner.append(dayNumber, square);
         cell.append(inner);
         cell.addEventListener('click', () => openDayModal(day, cell));
       } else {

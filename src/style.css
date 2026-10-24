@@ -800,33 +800,20 @@ td.col-square {
   }
 
   .calendar-cell.compact .dayCell__inner {
+    flex: 1;
     display: flex;
     flex-direction: column;
-    align-items: stretch;
-    justify-content: flex-start;
+    align-items: center;
+    justify-content: center;
     gap: 4px;
     min-width: 0;
   }
 
   .calendar-cell.compact .dayNum {
-    font-size: 0.85rem;
+    font-size: 0.78rem;
     font-weight: 800;
+    line-height: 1;
     color: #0f172a;
-  }
-
-  .calendar-cell.compact .miniBars {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    width: 100%;
-    min-width: 0;
-  }
-
-  .calendar-cell.compact .miniBar {
-    height: 7px;
-    border-radius: 999px;
-    width: 100%;
-    max-width: 100%;
   }
 
   .calendar-cell.compact .sq {
