@@ -11,7 +11,7 @@ import {
 } from './utils/formatters';
 import { buildOpenMeteoArchiveUrl, buildOpenMeteoUrl } from './utils/openMeteo';
 import { fetchMoonPhaseOutlook, getDaysUntilNextFullMoon } from './utils/moon';
-import { getTempPillColors } from './utils/temperatureBands';
+import { getTempPillColors, getTemperatureScale } from './utils/temperatureBands';
 import { buildDays, buildMonthGrid, groupByMonthKey } from './utils/calendar';
 import { COMPACT_CALENDAR_QUERY, isCompactCalendar } from './utils/responsive';
 import { DailyResponse, Day, TemperatureRow } from './types';
@@ -58,6 +58,7 @@ const moonIlluminationElement = document.getElementById('moon-illumination');
 const nextFullMoonElement = document.getElementById('next-full-moon');
 const nextFullMoonCountdownElement = document.getElementById('next-full-moon-countdown');
 const moonSourceElement = document.getElementById('moon-source');
+const colourLegendList = document.getElementById('colour-legend');
 
 if (siteLogo) {
   siteLogo.src = `${import.meta.env.BASE_URL}logo.png`;
@@ -89,6 +90,29 @@ const setLastUpdated = (date?: Date) => {
 const setMoonStatus = (message = '') => {
   if (!moonSourceElement) return;
   moonSourceElement.textContent = message;
+};
+
+const renderColourLegend = () => {
+  if (!colourLegendList) return;
+
+  const items = getTemperatureScale().map(({ label, bg }) => {
+    const item = document.createElement('li');
+    item.className = 'legend__item';
+
+    const swatch = document.createElement('span');
+    swatch.className = 'legend__swatch';
+    swatch.style.backgroundColor = bg;
+    swatch.setAttribute('aria-hidden', 'true');
+
+    const text = document.createElement('span');
+    text.className = 'legend__label';
+    text.textContent = label;
+
+    item.append(swatch, text);
+    return item;
+  });
+
+  colourLegendList.replaceChildren(...items);
 };
 
 const renderMoonOutlook = async () => {
@@ -574,5 +598,6 @@ window.addEventListener('resize', handleCompactViewportChange);
 
 showView(DEFAULT_VIEW);
 updateActiveRange(DEFAULT_RANGE);
+renderColourLegend();
 void renderMoonOutlook();
 void fetchTemperatures(DEFAULT_RANGE);

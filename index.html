@@ -74,6 +74,16 @@
         </section>
 
         <section class="data-card hidden" id="calendar-view" aria-live="polite"></section>
+
+        <section class="legend-card" aria-labelledby="legend-title">
+          <div class="legend-card__header">
+            <h2 id="legend-title">Colour scale</h2>
+            <p class="legend-card__note">
+              Each day is one square: the outer ring uses the day's max and the inner square its min.
+            </p>
+          </div>
+          <ul class="legend" id="colour-legend"></ul>
+        </section>
       </main>
     </div>
     <script type="module" src="/src/main.ts"></script>

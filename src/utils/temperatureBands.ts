@@ -5,7 +5,20 @@ export type TemperaturePillColors = {
   fg: string;
 };
 
-const TEMPERATURE_BANDS: Array<{ min: number; max: number; colors: TemperaturePillColors }> = [
+export type TemperatureBand = {
+  min: number;
+  max: number;
+  colors: TemperaturePillColors;
+};
+
+export type TemperatureScaleEntry = {
+  label: string;
+  min: number;
+  max: number;
+  bg: string;
+};
+
+const TEMPERATURE_BANDS: TemperatureBand[] = [
   { min: Number.NEGATIVE_INFINITY, max: 0, colors: { bg: '#5B2A86', fg: '#FFFFFF' } },
   { min: 1, max: 2, colors: { bg: '#1E3A8A', fg: '#FFFFFF' } },
   { min: 3, max: 4, colors: { bg: '#3B82F6', fg: '#FFFFFF' } },
@@ -34,3 +47,23 @@ export const getTempPillColors = (temperatureCelsius: number): TemperaturePillCo
   const match = TEMPERATURE_BANDS.find((band) => rounded >= band.min && rounded <= band.max);
   return match ? match.colors : { bg: '#E2E8F0', fg: '#102A43' };
 };
+
+const formatBandLabel = (band: TemperatureBand): string => {
+  if (band.min === Number.NEGATIVE_INFINITY) {
+    return `≤ ${band.max}°C`;
+  }
+
+  if (band.max === Number.POSITIVE_INFINITY) {
+    return `≥ ${band.min}°C`;
+  }
+
+  return `${band.min}–${band.max}°C`;
+};
+
+export const getTemperatureScale = (): TemperatureScaleEntry[] =>
+  TEMPERATURE_BANDS.map((band) => ({
+    label: formatBandLabel(band),
+    min: band.min,
+    max: band.max,
+    bg: band.colors.bg
+  }));

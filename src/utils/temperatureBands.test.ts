@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { getTempPillColors } from './temperatureBands';
+import { getTempPillColors, getTemperatureScale } from './temperatureBands';
 
 describe('getTempPillColors', () => {
   const cases = [
@@ -26,5 +26,35 @@ describe('getTempPillColors', () => {
 
   it('uses the rounded temperature when selecting bands', () => {
     expect(getTempPillColors(10.5).bg).toBe('#F4C542');
+  });
+});
+
+describe('getTemperatureScale', () => {
+  it('lists every band from cold to warm with readable labels', () => {
+    const scale = getTemperatureScale();
+
+    expect(scale).toHaveLength(16);
+    expect(scale[0]).toMatchObject({ label: '≤ 0°C', bg: '#5B2A86' });
+    expect(scale[1]).toMatchObject({ label: '1–2°C', bg: '#1E3A8A' });
+    expect(scale[14]).toMatchObject({ label: '27–28°C', bg: '#8B1E2D' });
+    expect(scale[15]).toMatchObject({ label: '≥ 29°C', bg: '#5A0B16' });
+  });
+
+  it('covers every rounded temperature exactly once, with the same colours as the pills', () => {
+    const scale = getTemperatureScale();
+
+    for (let temperature = -20; temperature <= 45; temperature += 1) {
+      const matches = scale.filter((entry) => temperature >= entry.min && temperature <= entry.max);
+      expect(matches).toHaveLength(1);
+      expect(matches[0].bg).toBe(getTempPillColors(temperature).bg);
+    }
+  });
+
+  it('has no gaps or overlaps between neighbouring bands', () => {
+    const scale = getTemperatureScale();
+
+    for (let index = 1; index < scale.length; index += 1) {
+      expect(scale[index].min).toBe(scale[index - 1].max + 1);
+    }
   });
 });
