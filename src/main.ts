@@ -10,7 +10,7 @@ import {
   formatTemperature
 } from './utils/formatters';
 import { buildOpenMeteoArchiveUrl, buildOpenMeteoUrl } from './utils/openMeteo';
-import { fetchMoonPhaseOutlook, getDaysUntilNextFullMoon } from './utils/moon';
+import { getDaysUntilNextFullMoon, getMoonPhaseOutlook } from './utils/moon';
 import { getTempPillColors, getTemperatureScale } from './utils/temperatureBands';
 import { buildDays, buildMonthGrid, groupByMonthKey } from './utils/calendar';
 import { COMPACT_CALENDAR_QUERY, isCompactCalendar } from './utils/responsive';
@@ -115,41 +115,23 @@ const renderColourLegend = () => {
   colourLegendList.replaceChildren(...items);
 };
 
-const renderMoonOutlook = async () => {
+const renderMoonOutlook = () => {
   if (!moonPhaseElement || !moonIlluminationElement || !nextFullMoonElement || !nextFullMoonCountdownElement) {
     return;
   }
 
-  moonPhaseElement.textContent = 'Loading…';
-  moonIlluminationElement.textContent = '';
-  nextFullMoonElement.textContent = 'Loading…';
-  nextFullMoonCountdownElement.textContent = '';
-  setMoonStatus('Checking moon phase…');
-
   const today = new Date();
-  const outlook = await fetchMoonPhaseOutlook(today, undefined, LOCATION.timezone);
+  const outlook = getMoonPhaseOutlook(today, LOCATION.timezone);
+
   moonPhaseElement.textContent = outlook.current.phase;
   moonIlluminationElement.textContent = `Illumination: ${formatPercent(outlook.current.illumination)}`;
+  nextFullMoonElement.textContent = formatShortDateFromTimestamp(outlook.nextFullMoon.timestampMs, LOCATION.timezone);
 
-  if (outlook.nextFullMoon) {
-    nextFullMoonElement.textContent = formatShortDateFromTimestamp(outlook.nextFullMoon.timestampMs, LOCATION.timezone);
-    const daysUntil = getDaysUntilNextFullMoon(today, outlook.nextFullMoon, LOCATION.timezone);
-    nextFullMoonCountdownElement.textContent =
-      daysUntil === null
-        ? 'Countdown unavailable'
-        : daysUntil === 0
-          ? "It's the full moon today."
-          : `${daysUntil} day${daysUntil === 1 ? '' : 's'} to go`;
-  } else {
-    nextFullMoonElement.textContent = 'Unavailable';
-    nextFullMoonCountdownElement.textContent = 'Try refreshing again later.';
-  }
+  const daysUntil = getDaysUntilNextFullMoon(today, outlook.nextFullMoon, LOCATION.timezone);
+  nextFullMoonCountdownElement.textContent =
+    daysUntil === 0 ? "It's the full moon today." : `${daysUntil} day${daysUntil === 1 ? '' : 's'} to go`;
 
-  setMoonStatus(
-    outlook.source === 'api'
-      ? 'Live moon-phase API for the current phase; next full moon calculated locally.'
-      : 'Approximate local moon calculations.'
-  );
+  setMoonStatus('Calculated locally from the lunar cycle.');
 };
 
 const createTemperaturePill = (value: number, label: 'Max' | 'Min', variant: 'max' | 'min') => {
@@ -599,5 +581,5 @@ window.addEventListener('resize', handleCompactViewportChange);
 showView(DEFAULT_VIEW);
 updateActiveRange(DEFAULT_RANGE);
 renderColourLegend();
-void renderMoonOutlook();
+renderMoonOutlook();
 void fetchTemperatures(DEFAULT_RANGE);
