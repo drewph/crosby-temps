@@ -1,0 +1,2202 @@
+{
+  "schemaVersion": 1,
+  "location": {
+    "label": "Crosby, Isle of Man",
+    "latitude": 54.18031473227185,
+    "longitude": -4.54729408020627,
+    "timezone": "Europe/London"
+  },
+  "frozenPolicy": "first-write",
+  "days": {
+    "2025-01-01": {
+      "maxC": 7.8,
+      "minC": 0,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-01-02": {
+      "maxC": 3.9,
+      "minC": -0.8,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-01-03": {
+      "maxC": 5.3,
+      "minC": 1.4,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-01-04": {
+      "maxC": 4.6,
+      "minC": 1.6,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-01-05": {
+      "maxC": 2.2,
+      "minC": 1,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-01-06": {
+      "maxC": 5.4,
+      "minC": 1.3,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-01-07": {
+      "maxC": 3.4,
+      "minC": 1.5,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-01-08": {
+      "maxC": 3.5,
+      "minC": -0.7,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-01-09": {
+      "maxC": 3.9,
+      "minC": -1.1,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-01-10": {
+      "maxC": 3.5,
+      "minC": -1.5,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-01-11": {
+      "maxC": 5.9,
+      "minC": 2.3,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-01-12": {
+      "maxC": 8.9,
+      "minC": 4.4,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-01-13": {
+      "maxC": 10.2,
+      "minC": 8.8,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-01-14": {
+      "maxC": 11.5,
+      "minC": 9.4,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-01-15": {
+      "maxC": 9.7,
+      "minC": 7.3,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-01-16": {
+      "maxC": 9.3,
+      "minC": 7.1,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-01-17": {
+      "maxC": 9.8,
+      "minC": 8,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-01-18": {
+      "maxC": 8,
+      "minC": 5.5,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-01-19": {
+      "maxC": 6.6,
+      "minC": 2.7,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-01-20": {
+      "maxC": 8.1,
+      "minC": 5.1,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-01-21": {
+      "maxC": 7.4,
+      "minC": 3.3,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-01-22": {
+      "maxC": 5.9,
+      "minC": 2.5,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-01-23": {
+      "maxC": 6.7,
+      "minC": 3.2,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-01-24": {
+      "maxC": 9.9,
+      "minC": 3.2,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-01-25": {
+      "maxC": 5.9,
+      "minC": 3,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-01-26": {
+      "maxC": 7,
+      "minC": 1.5,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-01-27": {
+      "maxC": 7.9,
+      "minC": 4.5,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-01-28": {
+      "maxC": 7,
+      "minC": 4.6,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-01-29": {
+      "maxC": 7.7,
+      "minC": 4.4,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-01-30": {
+      "maxC": 6.2,
+      "minC": 2.7,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-01-31": {
+      "maxC": 9,
+      "minC": 2.6,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-02-01": {
+      "maxC": 7.3,
+      "minC": 2.7,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-02-02": {
+      "maxC": 7.6,
+      "minC": 5.9,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-02-03": {
+      "maxC": 9.7,
+      "minC": 6.3,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-02-04": {
+      "maxC": 9.7,
+      "minC": 5.3,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-02-05": {
+      "maxC": 7.2,
+      "minC": 3.4,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-02-06": {
+      "maxC": 6.3,
+      "minC": 1.9,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-02-07": {
+      "maxC": 5.9,
+      "minC": 1.6,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-02-08": {
+      "maxC": 4.4,
+      "minC": 2.6,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-02-09": {
+      "maxC": 7.5,
+      "minC": 2.9,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-02-10": {
+      "maxC": 5.1,
+      "minC": 2.8,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-02-11": {
+      "maxC": 5.7,
+      "minC": 2.9,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-02-12": {
+      "maxC": 5.5,
+      "minC": 3.9,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-02-13": {
+      "maxC": 4.4,
+      "minC": 3,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-02-14": {
+      "maxC": 4.2,
+      "minC": 2.4,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-02-15": {
+      "maxC": 5.2,
+      "minC": 3,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-02-16": {
+      "maxC": 4.3,
+      "minC": 3.6,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-02-17": {
+      "maxC": 4.5,
+      "minC": 2.6,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-02-18": {
+      "maxC": 4.7,
+      "minC": 2.8,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-02-19": {
+      "maxC": 8.8,
+      "minC": 3.5,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-02-20": {
+      "maxC": 11.5,
+      "minC": 8.8,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-02-21": {
+      "maxC": 11.2,
+      "minC": 8.2,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-02-22": {
+      "maxC": 10.2,
+      "minC": 7.2,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-02-23": {
+      "maxC": 10.4,
+      "minC": 7.5,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-02-24": {
+      "maxC": 9.7,
+      "minC": 5.6,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-02-25": {
+      "maxC": 8.2,
+      "minC": 4.6,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-02-26": {
+      "maxC": 6.9,
+      "minC": 4,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-02-27": {
+      "maxC": 7.9,
+      "minC": 2.1,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-02-28": {
+      "maxC": 8.4,
+      "minC": 1.8,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-03-01": {
+      "maxC": 9,
+      "minC": 3.7,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-03-02": {
+      "maxC": 9.8,
+      "minC": 3.2,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-03-03": {
+      "maxC": 9.9,
+      "minC": 6.7,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-03-04": {
+      "maxC": 8.2,
+      "minC": 5.9,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-03-05": {
+      "maxC": 9.2,
+      "minC": 7,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-03-06": {
+      "maxC": 11.5,
+      "minC": 7,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-03-07": {
+      "maxC": 10.6,
+      "minC": 8.7,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-03-08": {
+      "maxC": 13.5,
+      "minC": 7.4,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-03-09": {
+      "maxC": 15.3,
+      "minC": 7,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-03-10": {
+      "maxC": 9.6,
+      "minC": 4.3,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-03-11": {
+      "maxC": 6.2,
+      "minC": 2,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-03-12": {
+      "maxC": 8.2,
+      "minC": 2.3,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-03-13": {
+      "maxC": 6.4,
+      "minC": 0.8,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-03-14": {
+      "maxC": 8.1,
+      "minC": 2.4,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-03-15": {
+      "maxC": 8.2,
+      "minC": 0.3,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-03-16": {
+      "maxC": 9.9,
+      "minC": 0.8,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-03-17": {
+      "maxC": 6.5,
+      "minC": 5.1,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-03-18": {
+      "maxC": 8.4,
+      "minC": 3,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-03-19": {
+      "maxC": 8.5,
+      "minC": 2.6,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-03-20": {
+      "maxC": 11.9,
+      "minC": 2.3,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-03-21": {
+      "maxC": 12.9,
+      "minC": 8.8,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-03-22": {
+      "maxC": 13.4,
+      "minC": 7.3,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-03-23": {
+      "maxC": 10.8,
+      "minC": 5.6,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-03-24": {
+      "maxC": 11.4,
+      "minC": 3.3,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-03-25": {
+      "maxC": 11.4,
+      "minC": 4.1,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-03-26": {
+      "maxC": 10.7,
+      "minC": 3.7,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-03-27": {
+      "maxC": 11.6,
+      "minC": 8.1,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-03-28": {
+      "maxC": 8.5,
+      "minC": 5.5,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-03-29": {
+      "maxC": 10.3,
+      "minC": 4.5,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-03-30": {
+      "maxC": 11.4,
+      "minC": 6.1,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-03-31": {
+      "maxC": 12.9,
+      "minC": 6.3,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-04-01": {
+      "maxC": 11.5,
+      "minC": 7.3,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-04-02": {
+      "maxC": 13,
+      "minC": 5.8,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-04-03": {
+      "maxC": 14.9,
+      "minC": 6.3,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-04-04": {
+      "maxC": 16,
+      "minC": 6.7,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-04-05": {
+      "maxC": 12.1,
+      "minC": 5.1,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-04-06": {
+      "maxC": 11.6,
+      "minC": 5.1,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-04-07": {
+      "maxC": 11.1,
+      "minC": 4.7,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-04-08": {
+      "maxC": 13.7,
+      "minC": 4.6,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-04-09": {
+      "maxC": 12.7,
+      "minC": 5.6,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-04-10": {
+      "maxC": 13.4,
+      "minC": 4,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-04-11": {
+      "maxC": 17.3,
+      "minC": 6.3,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-04-12": {
+      "maxC": 14,
+      "minC": 6.4,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-04-13": {
+      "maxC": 9.2,
+      "minC": 5.7,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-04-14": {
+      "maxC": 9,
+      "minC": 6.8,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-04-15": {
+      "maxC": 10.2,
+      "minC": 6.9,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-04-16": {
+      "maxC": 9.1,
+      "minC": 6.2,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-04-17": {
+      "maxC": 10.7,
+      "minC": 5,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-04-18": {
+      "maxC": 10.1,
+      "minC": 7.2,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-04-19": {
+      "maxC": 11.1,
+      "minC": 7.6,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-04-20": {
+      "maxC": 10,
+      "minC": 6.1,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-04-21": {
+      "maxC": 11.4,
+      "minC": 5.8,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-04-22": {
+      "maxC": 11.3,
+      "minC": 5.2,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-04-23": {
+      "maxC": 14.6,
+      "minC": 8.4,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-04-24": {
+      "maxC": 11.4,
+      "minC": 6.9,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-04-25": {
+      "maxC": 11.4,
+      "minC": 8.3,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-04-26": {
+      "maxC": 11.5,
+      "minC": 8.9,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-04-27": {
+      "maxC": 13.2,
+      "minC": 8.9,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-04-28": {
+      "maxC": 13.6,
+      "minC": 8.9,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-04-29": {
+      "maxC": 19,
+      "minC": 8.7,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-04-30": {
+      "maxC": 21.2,
+      "minC": 12.8,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-05-01": {
+      "maxC": 16,
+      "minC": 7.9,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-05-02": {
+      "maxC": 13.3,
+      "minC": 7.5,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-05-03": {
+      "maxC": 12.8,
+      "minC": 7.5,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-05-04": {
+      "maxC": 11.1,
+      "minC": 6.6,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-05-05": {
+      "maxC": 11.8,
+      "minC": 4.5,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-05-06": {
+      "maxC": 15,
+      "minC": 3.7,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-05-07": {
+      "maxC": 13.8,
+      "minC": 5.8,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-05-08": {
+      "maxC": 12.3,
+      "minC": 6.5,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-05-09": {
+      "maxC": 13.8,
+      "minC": 5.7,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-05-10": {
+      "maxC": 17.1,
+      "minC": 6.8,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-05-11": {
+      "maxC": 19.5,
+      "minC": 9.8,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-05-12": {
+      "maxC": 22,
+      "minC": 11.9,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-05-13": {
+      "maxC": 20.1,
+      "minC": 12.4,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-05-14": {
+      "maxC": 18,
+      "minC": 10,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-05-15": {
+      "maxC": 18.6,
+      "minC": 8.2,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-05-16": {
+      "maxC": 19.8,
+      "minC": 7.4,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-05-17": {
+      "maxC": 19.5,
+      "minC": 9,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-05-18": {
+      "maxC": 19,
+      "minC": 10,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-05-19": {
+      "maxC": 15.2,
+      "minC": 9,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-05-20": {
+      "maxC": 16.7,
+      "minC": 9.3,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-05-21": {
+      "maxC": 18.5,
+      "minC": 8.2,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-05-22": {
+      "maxC": 14.9,
+      "minC": 8.3,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-05-23": {
+      "maxC": 15.7,
+      "minC": 6.9,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-05-24": {
+      "maxC": 16.9,
+      "minC": 12.7,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-05-25": {
+      "maxC": 13.6,
+      "minC": 9.6,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-05-26": {
+      "maxC": 12.2,
+      "minC": 9.2,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-05-27": {
+      "maxC": 13,
+      "minC": 9.2,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-05-28": {
+      "maxC": 14.8,
+      "minC": 9.3,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-05-29": {
+      "maxC": 16.7,
+      "minC": 11.3,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-05-30": {
+      "maxC": 16.9,
+      "minC": 11.6,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-05-31": {
+      "maxC": 15.2,
+      "minC": 10.8,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-06-01": {
+      "maxC": 15.4,
+      "minC": 10,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-06-02": {
+      "maxC": 13.4,
+      "minC": 8.8,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-06-03": {
+      "maxC": 13.3,
+      "minC": 9.3,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-06-04": {
+      "maxC": 13.6,
+      "minC": 8.4,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-06-05": {
+      "maxC": 13.8,
+      "minC": 8.5,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-06-06": {
+      "maxC": 13.4,
+      "minC": 8.4,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-06-07": {
+      "maxC": 12.4,
+      "minC": 8.7,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-06-08": {
+      "maxC": 14.3,
+      "minC": 7.7,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-06-09": {
+      "maxC": 13.3,
+      "minC": 8.9,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-06-10": {
+      "maxC": 14.9,
+      "minC": 9.5,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-06-11": {
+      "maxC": 17.1,
+      "minC": 8.3,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-06-12": {
+      "maxC": 18.2,
+      "minC": 13.4,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-06-13": {
+      "maxC": 15.9,
+      "minC": 12.7,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-06-14": {
+      "maxC": 14.5,
+      "minC": 12.4,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-06-15": {
+      "maxC": 16.5,
+      "minC": 10.4,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-06-16": {
+      "maxC": 16.3,
+      "minC": 11.6,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-06-17": {
+      "maxC": 17.2,
+      "minC": 11.2,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-06-18": {
+      "maxC": 16.8,
+      "minC": 10.5,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-06-19": {
+      "maxC": 20.1,
+      "minC": 10.1,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-06-20": {
+      "maxC": 23.1,
+      "minC": 15.4,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-06-21": {
+      "maxC": 20,
+      "minC": 13.8,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-06-22": {
+      "maxC": 16.1,
+      "minC": 11.7,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-06-23": {
+      "maxC": 16.5,
+      "minC": 11.1,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-06-24": {
+      "maxC": 18.6,
+      "minC": 13.9,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-06-25": {
+      "maxC": 16.1,
+      "minC": 13.2,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-06-26": {
+      "maxC": 16.5,
+      "minC": 13.4,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-06-27": {
+      "maxC": 17,
+      "minC": 12.9,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-06-28": {
+      "maxC": 18.1,
+      "minC": 13,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-06-29": {
+      "maxC": 17.5,
+      "minC": 10.4,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-06-30": {
+      "maxC": 18,
+      "minC": 14,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-07-01": {
+      "maxC": 15.7,
+      "minC": 12,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-07-02": {
+      "maxC": 15.7,
+      "minC": 9.8,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-07-03": {
+      "maxC": 16,
+      "minC": 8.4,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-07-04": {
+      "maxC": 15.1,
+      "minC": 12.6,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-07-05": {
+      "maxC": 18.7,
+      "minC": 13.2,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-07-06": {
+      "maxC": 16.2,
+      "minC": 12.5,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-07-07": {
+      "maxC": 15.6,
+      "minC": 11.5,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-07-08": {
+      "maxC": 17.8,
+      "minC": 11.3,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-07-09": {
+      "maxC": 20.9,
+      "minC": 13.4,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-07-10": {
+      "maxC": 21.1,
+      "minC": 12.9,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-07-11": {
+      "maxC": 22.6,
+      "minC": 11.7,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-07-12": {
+      "maxC": 25.6,
+      "minC": 15.2,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-07-13": {
+      "maxC": 24.2,
+      "minC": 16,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-07-14": {
+      "maxC": 17.8,
+      "minC": 13.2,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-07-15": {
+      "maxC": 17.1,
+      "minC": 13,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-07-16": {
+      "maxC": 19.5,
+      "minC": 12.4,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-07-17": {
+      "maxC": 19.2,
+      "minC": 12.4,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-07-18": {
+      "maxC": 18.6,
+      "minC": 14,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-07-19": {
+      "maxC": 19.1,
+      "minC": 12.5,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-07-20": {
+      "maxC": 20,
+      "minC": 15.4,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-07-21": {
+      "maxC": 19.1,
+      "minC": 14.2,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-07-22": {
+      "maxC": 18.1,
+      "minC": 13.3,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-07-23": {
+      "maxC": 17.6,
+      "minC": 13.1,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-07-24": {
+      "maxC": 18.1,
+      "minC": 12.6,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-07-25": {
+      "maxC": 18.7,
+      "minC": 12.8,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-07-26": {
+      "maxC": 18.5,
+      "minC": 13.9,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-07-27": {
+      "maxC": 18,
+      "minC": 13,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-07-28": {
+      "maxC": 17.8,
+      "minC": 13.1,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-07-29": {
+      "maxC": 19.3,
+      "minC": 13.9,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-07-30": {
+      "maxC": 18.7,
+      "minC": 13.9,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-07-31": {
+      "maxC": 17.3,
+      "minC": 12.6,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-08-01": {
+      "maxC": 16.9,
+      "minC": 12.3,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-08-02": {
+      "maxC": 18.1,
+      "minC": 11.4,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-08-03": {
+      "maxC": 19.6,
+      "minC": 14.7,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-08-04": {
+      "maxC": 17.8,
+      "minC": 13.1,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-08-05": {
+      "maxC": 17,
+      "minC": 12,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-08-06": {
+      "maxC": 16.7,
+      "minC": 12,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-08-07": {
+      "maxC": 18.5,
+      "minC": 13.5,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-08-08": {
+      "maxC": 17.5,
+      "minC": 12.3,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-08-09": {
+      "maxC": 18.6,
+      "minC": 12.6,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-08-10": {
+      "maxC": 17.5,
+      "minC": 10.6,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-08-11": {
+      "maxC": 21.4,
+      "minC": 15.7,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-08-12": {
+      "maxC": 24.4,
+      "minC": 15.8,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-08-13": {
+      "maxC": 19.3,
+      "minC": 15.3,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-08-14": {
+      "maxC": 22,
+      "minC": 15.2,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-08-15": {
+      "maxC": 20.1,
+      "minC": 13.6,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-08-16": {
+      "maxC": 20.8,
+      "minC": 14.6,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-08-17": {
+      "maxC": 21.4,
+      "minC": 13.9,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-08-18": {
+      "maxC": 19.4,
+      "minC": 14.9,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-08-19": {
+      "maxC": 19.2,
+      "minC": 13.9,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-08-20": {
+      "maxC": 17,
+      "minC": 13.3,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-08-21": {
+      "maxC": 17.1,
+      "minC": 10.3,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-08-22": {
+      "maxC": 19,
+      "minC": 12.3,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-08-23": {
+      "maxC": 20,
+      "minC": 13.1,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-08-24": {
+      "maxC": 19.8,
+      "minC": 13.6,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-08-25": {
+      "maxC": 21.2,
+      "minC": 13.2,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-08-26": {
+      "maxC": 18.5,
+      "minC": 14.5,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-08-27": {
+      "maxC": 17.3,
+      "minC": 14.3,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-08-28": {
+      "maxC": 16.1,
+      "minC": 13.4,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-08-29": {
+      "maxC": 17.1,
+      "minC": 12.6,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-08-30": {
+      "maxC": 17,
+      "minC": 12.8,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-08-31": {
+      "maxC": 16.9,
+      "minC": 13.1,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-09-01": {
+      "maxC": 16.3,
+      "minC": 12.9,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-09-02": {
+      "maxC": 16.3,
+      "minC": 11.7,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-09-03": {
+      "maxC": 15.9,
+      "minC": 12.1,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-09-04": {
+      "maxC": 16,
+      "minC": 10.6,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-09-05": {
+      "maxC": 15.9,
+      "minC": 11.9,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-09-06": {
+      "maxC": 18.1,
+      "minC": 14.3,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-09-07": {
+      "maxC": 18,
+      "minC": 12.5,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-09-08": {
+      "maxC": 15.2,
+      "minC": 11.1,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-09-09": {
+      "maxC": 15.7,
+      "minC": 12.5,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-09-10": {
+      "maxC": 15.2,
+      "minC": 11.7,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-09-11": {
+      "maxC": 14,
+      "minC": 10.9,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-09-12": {
+      "maxC": 14.5,
+      "minC": 10.3,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-09-13": {
+      "maxC": 14,
+      "minC": 9.9,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-09-14": {
+      "maxC": 14.6,
+      "minC": 10.3,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-09-15": {
+      "maxC": 14.7,
+      "minC": 11.8,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-09-16": {
+      "maxC": 14.9,
+      "minC": 11.4,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-09-17": {
+      "maxC": 18.2,
+      "minC": 12,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-09-18": {
+      "maxC": 16.8,
+      "minC": 12.2,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-09-19": {
+      "maxC": 16.2,
+      "minC": 13.5,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-09-20": {
+      "maxC": 13.6,
+      "minC": 9.1,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-09-21": {
+      "maxC": 12.1,
+      "minC": 7.4,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-09-22": {
+      "maxC": 12.6,
+      "minC": 5.6,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-09-23": {
+      "maxC": 13.6,
+      "minC": 7.9,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-09-24": {
+      "maxC": 13.9,
+      "minC": 7.3,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-09-25": {
+      "maxC": 14.2,
+      "minC": 10.6,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-09-26": {
+      "maxC": 14,
+      "minC": 10.7,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-09-27": {
+      "maxC": 13.3,
+      "minC": 8.8,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-09-28": {
+      "maxC": 13.8,
+      "minC": 8.2,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-09-29": {
+      "maxC": 14.3,
+      "minC": 7,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-09-30": {
+      "maxC": 15.2,
+      "minC": 12.4,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-10-01": {
+      "maxC": 15.6,
+      "minC": 13.8,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-10-02": {
+      "maxC": 15.4,
+      "minC": 13.7,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-10-03": {
+      "maxC": 16.6,
+      "minC": 10.7,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-10-04": {
+      "maxC": 12.7,
+      "minC": 8.4,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-10-05": {
+      "maxC": 13.6,
+      "minC": 10.6,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-10-06": {
+      "maxC": 15.5,
+      "minC": 11.8,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-10-07": {
+      "maxC": 14.3,
+      "minC": 10.3,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-10-08": {
+      "maxC": 13.5,
+      "minC": 8.3,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-10-09": {
+      "maxC": 14.4,
+      "minC": 11.4,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-10-10": {
+      "maxC": 13,
+      "minC": 9.5,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-10-11": {
+      "maxC": 12.5,
+      "minC": 7.1,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-10-12": {
+      "maxC": 12.7,
+      "minC": 7.9,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-10-13": {
+      "maxC": 13.6,
+      "minC": 8.9,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-10-14": {
+      "maxC": 13.3,
+      "minC": 9.8,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-10-15": {
+      "maxC": 12.5,
+      "minC": 9.3,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-10-16": {
+      "maxC": 12.1,
+      "minC": 9.8,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-10-17": {
+      "maxC": 11.7,
+      "minC": 8.9,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-10-18": {
+      "maxC": 12.9,
+      "minC": 10.4,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-10-19": {
+      "maxC": 13.8,
+      "minC": 11.2,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-10-20": {
+      "maxC": 13.8,
+      "minC": 10,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-10-21": {
+      "maxC": 12.7,
+      "minC": 9.4,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-10-22": {
+      "maxC": 11.7,
+      "minC": 6.6,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-10-23": {
+      "maxC": 9.5,
+      "minC": 6.5,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-10-24": {
+      "maxC": 10.9,
+      "minC": 7.3,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-10-25": {
+      "maxC": 10,
+      "minC": 5.7,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-10-26": {
+      "maxC": 11.2,
+      "minC": 6.3,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-10-27": {
+      "maxC": 11.8,
+      "minC": 9.1,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-10-28": {
+      "maxC": 11.6,
+      "minC": 8.5,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-10-29": {
+      "maxC": 10.3,
+      "minC": 6.6,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-10-30": {
+      "maxC": 12.5,
+      "minC": 6,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-10-31": {
+      "maxC": 13,
+      "minC": 10.5,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-11-01": {
+      "maxC": 10.7,
+      "minC": 8.1,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-11-02": {
+      "maxC": 12,
+      "minC": 6.8,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-11-03": {
+      "maxC": 14.6,
+      "minC": 12,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-11-04": {
+      "maxC": 14,
+      "minC": 12.9,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-11-05": {
+      "maxC": 14.3,
+      "minC": 12.7,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-11-06": {
+      "maxC": 14.2,
+      "minC": 11.8,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-11-07": {
+      "maxC": 12.6,
+      "minC": 11.2,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-11-08": {
+      "maxC": 12,
+      "minC": 10,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-11-09": {
+      "maxC": 13,
+      "minC": 9.4,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-11-10": {
+      "maxC": 11,
+      "minC": 7.1,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-11-11": {
+      "maxC": 13.1,
+      "minC": 7.5,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-11-12": {
+      "maxC": 11.9,
+      "minC": 10.1,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-11-13": {
+      "maxC": 12.3,
+      "minC": 7.8,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-11-14": {
+      "maxC": 8.4,
+      "minC": 6.7,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-11-15": {
+      "maxC": 9.9,
+      "minC": 6.6,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-11-16": {
+      "maxC": 8.4,
+      "minC": 3.5,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-11-17": {
+      "maxC": 5.4,
+      "minC": 2.1,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-11-18": {
+      "maxC": 8,
+      "minC": 2.8,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-11-19": {
+      "maxC": 4.3,
+      "minC": 1.6,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-11-20": {
+      "maxC": 4.9,
+      "minC": 0.3,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-11-21": {
+      "maxC": 8.6,
+      "minC": -0.1,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-11-22": {
+      "maxC": 9.3,
+      "minC": 5.1,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-11-23": {
+      "maxC": 9.4,
+      "minC": 5.3,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-11-24": {
+      "maxC": 8.6,
+      "minC": 4.9,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-11-25": {
+      "maxC": 7,
+      "minC": 2.3,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-11-26": {
+      "maxC": 12.1,
+      "minC": 3.8,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-11-27": {
+      "maxC": 13,
+      "minC": 9.9,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-11-28": {
+      "maxC": 9.9,
+      "minC": 7.3,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-11-29": {
+      "maxC": 8.1,
+      "minC": 2.3,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-11-30": {
+      "maxC": 10,
+      "minC": 3.8,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-12-01": {
+      "maxC": 11.2,
+      "minC": 7,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-12-02": {
+      "maxC": 9.5,
+      "minC": 6.7,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-12-03": {
+      "maxC": 9.1,
+      "minC": 6.8,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-12-04": {
+      "maxC": 8.2,
+      "minC": 4.9,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-12-05": {
+      "maxC": 9.6,
+      "minC": 6,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-12-06": {
+      "maxC": 9.8,
+      "minC": 7,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-12-07": {
+      "maxC": 9.6,
+      "minC": 7.7,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-12-08": {
+      "maxC": 11.1,
+      "minC": 9,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-12-09": {
+      "maxC": 13.1,
+      "minC": 10.1,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-12-10": {
+      "maxC": 10.6,
+      "minC": 8.4,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-12-11": {
+      "maxC": 11.3,
+      "minC": 7.4,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-12-12": {
+      "maxC": 9.6,
+      "minC": 6,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-12-13": {
+      "maxC": 11.2,
+      "minC": 8,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-12-14": {
+      "maxC": 11.3,
+      "minC": 10,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-12-15": {
+      "maxC": 10,
+      "minC": 4.3,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-12-16": {
+      "maxC": 7.9,
+      "minC": 2.6,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-12-17": {
+      "maxC": 10.8,
+      "minC": 7.6,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-12-18": {
+      "maxC": 9.9,
+      "minC": 6.3,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-12-19": {
+      "maxC": 8.7,
+      "minC": 7.3,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-12-20": {
+      "maxC": 8.8,
+      "minC": 6.9,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-12-21": {
+      "maxC": 9.2,
+      "minC": 7.1,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-12-22": {
+      "maxC": 9.5,
+      "minC": 7.7,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-12-23": {
+      "maxC": 8.5,
+      "minC": 6.9,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-12-24": {
+      "maxC": 7.1,
+      "minC": 3.9,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-12-25": {
+      "maxC": 5.2,
+      "minC": 3.5,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-12-26": {
+      "maxC": 6,
+      "minC": 3.8,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-12-27": {
+      "maxC": 6.1,
+      "minC": 3.2,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-12-28": {
+      "maxC": 6.5,
+      "minC": 4.4,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-12-29": {
+      "maxC": 5.9,
+      "minC": 2.6,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-12-30": {
+      "maxC": 5,
+      "minC": 0.3,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    },
+    "2025-12-31": {
+      "maxC": 4.6,
+      "minC": 0.3,
+      "source": "archive",
+      "recordedAt": "2026-10-25T12:11:18.111Z"
+    }
+  }
+}
