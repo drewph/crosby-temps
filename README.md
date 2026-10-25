@@ -28,6 +28,13 @@ A small static site that lists the last week of max/min daily temperatures for C
    npm run build
    ```
 
+## Views
+
+- **List** and **Calendar** show the selected range (last 7, 30 or 60 days).
+- **Year** shows every month of a chosen year. It reads
+  `public/data/<year>.json` when a snapshot exists and falls back to the
+  Open-Meteo archive for earlier years. Select a year with the picker.
+
 ## Daily data snapshot
 
 The site itself reads Open-Meteo live, but `public/data/<year>.json` keeps a frozen

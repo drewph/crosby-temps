@@ -25,7 +25,7 @@ export const buildDays = (daily: DailyResponse): Day[] => {
   const days = daily.time.flatMap((isoDate, index) => {
     const max = daily.temperature_2m_max[index];
     const min = daily.temperature_2m_min[index];
-    if (!Number.isFinite(max) || !Number.isFinite(min)) {
+    if (typeof max !== 'number' || typeof min !== 'number' || !Number.isFinite(max) || !Number.isFinite(min)) {
       return [];
     }
 
