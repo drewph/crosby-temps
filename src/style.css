@@ -19,6 +19,21 @@ body {
     linear-gradient(135deg, #e2f3ff 0%, #f8fafc 60%, #fef2f2 100%);
 }
 
+body.modal-open {
+  overflow: hidden;
+}
+
+.noscript {
+  max-width: 40rem;
+  margin: 1rem auto;
+  padding: 0.75rem 1rem;
+  border: 1px solid #fcd34d;
+  border-radius: 12px;
+  background: #fffbeb;
+  color: #78350f;
+  font-size: 0.9rem;
+}
+
 #app {
   margin: 0 auto;
   padding: 2.75rem 1.75rem 3.25rem;
