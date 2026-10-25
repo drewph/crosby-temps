@@ -23,14 +23,19 @@
 
       <main>
         <div class="controls" aria-label="Data controls">
-          <div class="range-buttons" role="group" aria-label="Quick ranges">
+          <div class="range-buttons" id="range-controls" role="group" aria-label="Quick ranges">
             <button class="range-button active" data-range="7" type="button">Last 7</button>
             <button class="range-button" data-range="30" type="button">Last 30</button>
             <button class="range-button" data-range="60" type="button">Last 60</button>
           </div>
+          <div class="year-picker" id="year-picker" hidden>
+            <label for="year-select">Year</label>
+            <select id="year-select"></select>
+          </div>
           <div class="view-toggle" role="group" aria-label="View mode">
             <button class="view-button active" data-view="list" type="button">List</button>
             <button class="view-button" data-view="calendar" type="button">Calendar</button>
+            <button class="view-button" data-view="year" type="button">Year</button>
           </div>
         </div>
 
@@ -76,6 +81,8 @@
         </section>
 
         <section class="data-card hidden" id="calendar-view" aria-live="polite"></section>
+
+        <section class="data-card hidden year-view" id="year-view" aria-label="Year view"></section>
 
         <section class="legend-card" aria-labelledby="legend-title">
           <div class="legend-card__header">

@@ -1,5 +1,5 @@
 import './style.css';
-import { formatDate, getLastNDaysRange } from './utils/dateRanges';
+import { formatDate, getLastNDaysRange, getYesterday } from './utils/dateRanges';
 import {
   formatClockTime,
   formatDateWithWeekday,
@@ -17,6 +17,7 @@ import { findMissingDates } from './utils/dataQuality';
 import { getTempPillColors, getTemperatureScale } from './utils/temperatureBands';
 import { buildDays, buildMonthGrid, groupByMonthKey } from './utils/calendar';
 import { COMPACT_CALENDAR_QUERY, isCompactCalendar } from './utils/responsive';
+import { getYearDateRange, snapshotToDailyResponse } from './utils/yearData';
 import { DailyResponse, Day, TemperatureRow } from './types';
 
 type OpenMeteoResponse = {
@@ -24,7 +25,7 @@ type OpenMeteoResponse = {
 };
 
 type RangeOption = 7 | 30 | 60;
-type ViewMode = 'list' | 'calendar';
+type ViewMode = 'list' | 'calendar' | 'year';
 const RANGE_OPTIONS: RangeOption[] = [7, 30, 60];
 
 const LOCATION = {
@@ -45,6 +46,20 @@ let compactCalendarEnabled = isCompactCalendar();
 let modalOverlay: HTMLDivElement | null = null;
 let selectedCalendarCell: HTMLElement | null = null;
 
+type YearRecord = {
+  days: Day[];
+  source: 'snapshot' | 'archive';
+};
+
+const getCurrentYear = (): number =>
+  Number(new Intl.DateTimeFormat('en-GB', { timeZone: LOCATION.timezone, year: 'numeric' }).format(new Date()));
+
+let listLastIso: string | undefined;
+let listNotice = '';
+let yearViewYear = getCurrentYear();
+let yearLoadToken = 0;
+const yearCache = new Map<number, YearRecord>();
+
 const WEEKDAY_LABELS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
 const locationName = document.getElementById('location-name');
@@ -58,6 +73,10 @@ const rangeButtons = Array.from(document.querySelectorAll<HTMLButtonElement>('.r
 const viewButtons = Array.from(document.querySelectorAll<HTMLButtonElement>('.view-button'));
 const listSection = document.getElementById('list-view');
 const calendarSection = document.getElementById('calendar-view');
+const yearSection = document.getElementById('year-view');
+const rangeControls = document.getElementById('range-controls');
+const yearPicker = document.getElementById('year-picker');
+const yearSelect = document.getElementById('year-select') as HTMLSelectElement | null;
 const moonPhaseElement = document.getElementById('moon-phase');
 const moonIlluminationElement = document.getElementById('moon-illumination');
 const nextFullMoonElement = document.getElementById('next-full-moon');
@@ -90,12 +109,17 @@ const setDataNotice = (message = '') => {
   dataNoticeElement.hidden = message === '';
 };
 
-const setDataThrough = (latestIsoDate?: string) => {
+const setDataThrough = (latestIsoDate?: string, detail?: string) => {
   if (!lastUpdatedElement) return;
-  lastUpdatedElement.textContent = latestIsoDate
-    ? `Data through ${formatShortDate(latestIsoDate, LOCATION.timezone)} · checked ${formatClockTime(new Date(), LOCATION.timezone)}`
-    : '';
+  if (!latestIsoDate) {
+    lastUpdatedElement.textContent = '';
+    return;
+  }
+  const suffix = detail ?? `checked ${formatClockTime(new Date(), LOCATION.timezone)}`;
+  lastUpdatedElement.textContent = `Data through ${formatShortDate(latestIsoDate, LOCATION.timezone)} · ${suffix}`;
 };
+
+const getYesterdayIso = () => getYesterday(LOCATION.timezone).toISOString().slice(0, 10);
 
 const getFetchSignal = (): AbortSignal | undefined =>
   typeof AbortSignal !== 'undefined' && typeof AbortSignal.timeout === 'function'
@@ -223,14 +247,23 @@ const updateActiveView = (view: ViewMode) => {
 };
 
 const showView = (view: ViewMode) => {
-  currentView = view;
-  if (currentView !== 'calendar') {
+  if (view !== currentView) {
     closeDayModal();
   }
-  updateActiveView(currentView);
-  const isListView = currentView === 'list';
-  listSection?.classList.toggle('hidden', !isListView);
-  calendarSection?.classList.toggle('hidden', isListView);
+  currentView = view;
+  updateActiveView(view);
+
+  listSection?.classList.toggle('hidden', view !== 'list');
+  calendarSection?.classList.toggle('hidden', view !== 'calendar');
+  yearSection?.classList.toggle('hidden', view !== 'year');
+  rangeControls?.classList.toggle('hidden', view === 'year');
+  if (yearPicker) {
+    yearPicker.hidden = view !== 'year';
+  }
+
+  if (view !== 'year') {
+    setStatus('');
+  }
 };
 
 const handleEscapeClose = (event: KeyboardEvent) => {
@@ -412,26 +445,13 @@ const renderListView = (days: Day[]) => {
   renderCards(rows);
 };
 
-const renderCalendarView = (days: Day[]) => {
-  if (!calendarSection) return;
-  closeDayModal();
-  calendarSection.innerHTML = '';
-
-  if (!days.length) {
-    const emptyState = document.createElement('p');
-    emptyState.className = 'calendar-empty';
-    emptyState.textContent = 'No data to display yet.';
-    calendarSection.appendChild(emptyState);
-    return;
-  }
-
+const renderMonthSections = (container: HTMLElement, days: Day[], compact: boolean) => {
   const monthGroups = groupByMonthKey(days);
   const monthFormatter = new Intl.DateTimeFormat('en-GB', {
     timeZone: LOCATION.timezone,
     month: 'long',
     year: 'numeric'
   });
-  const useCompactCalendar = compactCalendarEnabled;
 
   monthGroups.forEach(({ monthKey, days: monthDays }) => {
     const [year, month] = monthKey.split('-').map(Number);
@@ -466,7 +486,7 @@ const renderCalendarView = (days: Day[]) => {
         return;
       }
 
-      if (useCompactCalendar) {
+      if (compact) {
         cell.classList.add('compact');
         const inner = document.createElement('div');
         inner.className = 'dayCell__inner';
@@ -505,17 +525,93 @@ const renderCalendarView = (days: Day[]) => {
     });
 
     monthSection.appendChild(gridEl);
-    calendarSection.appendChild(monthSection);
+    container.appendChild(monthSection);
   });
+};
+
+const renderCalendarView = (days: Day[]) => {
+  if (!calendarSection) return;
+  closeDayModal();
+  calendarSection.innerHTML = '';
+
+  if (!days.length) {
+    const emptyState = document.createElement('p');
+    emptyState.className = 'calendar-empty';
+    emptyState.textContent = 'No data to display yet.';
+    calendarSection.appendChild(emptyState);
+    return;
+  }
+
+  renderMonthSections(calendarSection, days, compactCalendarEnabled);
+};
+
+const renderYearView = () => {
+  if (!yearSection) return;
+  closeDayModal();
+  yearSection.innerHTML = '';
+
+  const record = yearCache.get(yearViewYear);
+  if (!record || !record.days.length) {
+    const emptyState = document.createElement('p');
+    emptyState.className = 'calendar-empty';
+    emptyState.textContent = `No data recorded for ${yearViewYear} yet.`;
+    yearSection.appendChild(emptyState);
+    return;
+  }
+
+  renderMonthSections(yearSection, record.days, true);
+};
+
+const applyListMeta = () => {
+  setDataThrough(listLastIso);
+  setDataNotice(listNotice);
+};
+
+const applyYearMeta = () => {
+  const record = yearCache.get(yearViewYear);
+  if (!record || !record.days.length) {
+    setDataThrough(undefined);
+    setDataNotice('');
+    return;
+  }
+
+  const days = record.days;
+  const lastIso = days[days.length - 1].isoDate;
+  const { startDate, endDate } = getYearDateRange(yearViewYear, getYesterdayIso());
+  if (!endDate) {
+    setDataThrough(undefined);
+    setDataNotice('');
+    return;
+  }
+
+  const start = new Date(`${startDate}T00:00:00Z`);
+  const end = new Date(`${endDate}T00:00:00Z`);
+  const expectedDays = Math.round((end.getTime() - start.getTime()) / 86400000) + 1;
+  const missingDates = findMissingDates(start, end, days.map((day) => day.isoDate));
+
+  setDataThrough(lastIso, record.source === 'snapshot' ? 'frozen snapshot' : 'archive');
+  setDataNotice(
+    missingDates.length
+      ? `No data for ${formatMissingDateList(missingDates)}. Showing ${days.length} of ${expectedDays} days.`
+      : ''
+  );
 };
 
 const renderForCurrentView = () => {
   if (currentView === 'list') {
     renderListView(cachedDays);
+    applyListMeta();
     return;
   }
 
-  renderCalendarView(cachedDays);
+  if (currentView === 'calendar') {
+    renderCalendarView(cachedDays);
+    applyListMeta();
+    return;
+  }
+
+  renderYearView();
+  applyYearMeta();
 };
 
 const handleCompactViewportChange = () => {
@@ -526,6 +622,114 @@ const handleCompactViewportChange = () => {
 
   if (currentView === 'calendar') {
     renderCalendarView(cachedDays);
+  }
+};
+
+const fetchSnapshotYear = async (year: number): Promise<Day[] | undefined> => {
+  const response = await fetch(`${import.meta.env.BASE_URL}data/${year}.json`, { signal: getFetchSignal() });
+  const contentType = response.headers.get('content-type') ?? '';
+  if (!response.ok || !contentType.includes('application/json')) {
+    return undefined;
+  }
+
+  const payload = await response.json();
+  const daily = snapshotToDailyResponse(payload);
+  return daily ? buildDays(daily) : undefined;
+};
+
+const fetchArchiveYear = async (year: number): Promise<Day[]> => {
+  const { startDate, endDate } = getYearDateRange(year, getYesterdayIso());
+  if (!endDate) {
+    return [];
+  }
+
+  const url = buildOpenMeteoArchiveUrl({
+    latitude: LOCATION.latitude,
+    longitude: LOCATION.longitude,
+    timezone: LOCATION.timezone,
+    startDate,
+    endDate
+  });
+
+  const response = await fetch(url.toString(), { signal: getFetchSignal() });
+  if (!response.ok) {
+    throw new Error(`Archive request failed with status ${response.status}`);
+  }
+
+  const data: OpenMeteoResponse = await response.json();
+  if (!data.daily?.time || !data.daily.temperature_2m_max || !data.daily.temperature_2m_min) {
+    throw new Error('Unexpected response format');
+  }
+
+  return buildDays(data.daily);
+};
+
+const fetchYearRecord = async (year: number): Promise<YearRecord> => {
+  try {
+    const snapshotDays = await fetchSnapshotYear(year);
+    if (snapshotDays?.length) {
+      return { days: snapshotDays, source: 'snapshot' };
+    }
+  } catch (error) {
+    console.warn('Snapshot unavailable, falling back to the archive.', error);
+  }
+
+  return { days: await fetchArchiveYear(year), source: 'archive' };
+};
+
+const loadYear = async (year: number) => {
+  const cached = yearCache.get(year);
+  if (cached) {
+    yearViewYear = year;
+    if (currentView === 'year') {
+      renderForCurrentView();
+      setStatus('');
+    }
+    return;
+  }
+
+  const token = ++yearLoadToken;
+  setStatus(`Loading ${year}…`);
+  setDataNotice('');
+
+  try {
+    const record = await fetchYearRecord(year);
+    if (!record.days.length) {
+      throw new Error(`No data available for ${year}`);
+    }
+
+    yearCache.set(year, record);
+    if (token !== yearLoadToken) {
+      return;
+    }
+
+    yearViewYear = year;
+    if (currentView === 'year') {
+      renderForCurrentView();
+      setStatus('');
+    }
+  } catch (error) {
+    console.error(error);
+    if (token !== yearLoadToken || currentView !== 'year') {
+      return;
+    }
+
+    if (yearSection) {
+      yearSection.innerHTML = '';
+      const message = document.createElement('p');
+      message.className = 'calendar-empty';
+      message.textContent = `Unable to load data for ${year}. Please try again later.`;
+      yearSection.appendChild(message);
+      setDataThrough(undefined);
+      setDataNotice('');
+    }
+
+    setStatus(
+      isTimeoutError(error)
+        ? `${year} took too long to load. Please try again.`
+        : `Unable to load ${year} right now. Please try again later.`,
+      true
+    );
   }
 };
 
@@ -561,22 +765,24 @@ const fetchTemperatures = async (range: RangeOption) => {
       throw new Error('No usable temperature data in response');
     }
 
-    renderForCurrentView();
-    setDataThrough(cachedDays[cachedDays.length - 1].isoDate);
-
+    listLastIso = cachedDays[cachedDays.length - 1].isoDate;
     const missingDates = findMissingDates(start, end, cachedDays.map((day) => day.isoDate));
-    setDataNotice(
-      missingDates.length
-        ? `No data for ${formatMissingDateList(missingDates)}. Showing ${cachedDays.length} of ${expectedDayCount} days.`
-        : ''
-    );
+    listNotice = missingDates.length
+      ? `No data for ${formatMissingDateList(missingDates)}. Showing ${cachedDays.length} of ${expectedDayCount} days.`
+      : '';
+
+    if (currentView !== 'year') {
+      renderForCurrentView();
+    }
     setStatus('');
   } catch (error) {
     console.error(error);
     cachedDays = [];
-    renderForCurrentView();
-    setDataThrough(undefined);
-    setDataNotice('');
+    listLastIso = undefined;
+    listNotice = '';
+    if (currentView !== 'year') {
+      renderForCurrentView();
+    }
     setStatus(
       isTimeoutError(error)
         ? 'Weather data took too long to load. Please try again.'
@@ -607,10 +813,46 @@ viewButtons.forEach((button) => {
   button.addEventListener('click', () => {
     const selectedView = button.dataset.view as ViewMode | undefined;
     if (!selectedView || selectedView === currentView) return;
+
     showView(selectedView);
+
+    if (selectedView === 'year') {
+      void loadYear(yearViewYear);
+      return;
+    }
+
     renderForCurrentView();
   });
 });
+
+const populateYearSelect = () => {
+  if (!yearSelect) return;
+
+  const currentYear = getCurrentYear();
+  const options = document.createDocumentFragment();
+  for (let year = currentYear; year >= 1940; year -= 1) {
+    const option = document.createElement('option');
+    option.value = String(year);
+    option.textContent = String(year);
+    options.appendChild(option);
+  }
+
+  yearSelect.replaceChildren(options);
+  yearSelect.value = String(yearViewYear);
+
+  yearSelect.addEventListener('change', () => {
+    const year = Number(yearSelect.value);
+    if (!Number.isInteger(year) || year < 1940 || year > currentYear) {
+      return;
+    }
+
+    yearViewYear = year;
+    if (currentView !== 'year') {
+      showView('year');
+    }
+    void loadYear(year);
+  });
+};
 
 const compactMediaQuery = window.matchMedia(COMPACT_CALENDAR_QUERY);
 compactMediaQuery.addEventListener('change', handleCompactViewportChange);
@@ -620,4 +862,5 @@ showView(DEFAULT_VIEW);
 updateActiveRange(DEFAULT_RANGE);
 renderColourLegend();
 renderMoonOutlook();
+populateYearSelect();
 void fetchTemperatures(DEFAULT_RANGE);
