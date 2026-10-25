@@ -764,6 +764,25 @@ td.col-square {
   border-radius: 3px;
 }
 
+.site-footer {
+  margin-top: 1.5rem;
+  color: #475569;
+  font-size: 0.78rem;
+  text-align: center;
+}
+
+.site-footer p {
+  margin: 0;
+}
+
+.site-footer a {
+  color: #1d4ed8;
+}
+
+.site-footer a:hover {
+  text-decoration: none;
+}
+
 @media (max-width: 900px) {
   .site-logo {
     height: 44px;

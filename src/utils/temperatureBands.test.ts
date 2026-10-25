@@ -58,3 +58,27 @@ describe('getTemperatureScale', () => {
     }
   });
 });
+
+const relativeLuminance = (hex: string): number => {
+  const value = hex.replace('#', '');
+  const channels = [0, 2, 4].map((offset) => Number.parseInt(value.slice(offset, offset + 2), 16) / 255);
+  const [red, green, blue] = channels.map((channel) =>
+    channel <= 0.04045 ? channel / 12.92 : ((channel + 0.055) / 1.055) ** 2.4
+  );
+
+  return 0.2126 * red + 0.7152 * green + 0.0722 * blue;
+};
+
+const contrastRatio = (first: string, second: string): number => {
+  const [lighter, darker] = [relativeLuminance(first), relativeLuminance(second)].sort((a, b) => b - a);
+  return (lighter + 0.05) / (darker + 0.05);
+};
+
+describe('pill contrast', () => {
+  it('keeps text at WCAG AA contrast in every band', () => {
+    for (let temperature = -20; temperature <= 45; temperature += 1) {
+      const { bg, fg } = getTempPillColors(temperature);
+      expect(contrastRatio(bg, fg)).toBeGreaterThanOrEqual(4.5);
+    }
+  });
+});
