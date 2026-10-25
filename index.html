@@ -2,8 +2,9 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Daily max and min temperatures for Crosby, Isle of Man, with a colour scale for a temperature blanket." />
+    <link rel="icon" type="image/png" href="/favicon.png" />
     <title>Crosby Temperatures</title>
   </head>
   <body>
@@ -94,6 +95,14 @@
           <ul class="legend" id="colour-legend"></ul>
         </section>
       </main>
+
+      <footer class="site-footer">
+        <p>
+          Weather data by <a href="https://open-meteo.com/" rel="noopener noreferrer">Open-Meteo.com</a>,
+          licensed under <a href="https://creativecommons.org/licenses/by/4.0/" rel="noopener noreferrer">CC BY 4.0</a>.
+          Moon phases calculated locally.
+        </p>
+      </footer>
     </div>
     <script type="module" src="/src/main.ts"></script>
   </body>

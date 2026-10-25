@@ -29,15 +29,15 @@ jobs:
       contents: write
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
-          node-version: 20
+          node-version: 24
 
       - name: Install dependencies
-        run: npm install
+        run: npm ci
 
       - name: Record the daily snapshot
         if: github.event_name != 'push'
@@ -64,6 +64,9 @@ jobs:
           git pull --rebase origin main
           git push origin HEAD:main
 
+      - name: Type check
+        run: npm run typecheck
+
       - name: Run tests
         run: npm test
 
@@ -71,7 +74,7 @@ jobs:
         run: npm run build
 
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@v5
         with:
           path: ./dist
 
@@ -84,4 +87,18 @@ jobs:
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5
+
+      - name: Smoke test the deployed site
+        run: |
+          url="${{ steps.deployment.outputs.page_url }}"
+          for attempt in 1 2 3 4 5; do
+            if curl -fsS "$url" | grep -q "Crosby Temperatures"; then
+              echo "Deployed page responded at $url"
+              exit 0
+            fi
+            echo "Attempt $attempt did not return the expected page; retrying in 5 seconds."
+            sleep 5
+          done
+          echo "Deployed page did not return the expected content."
+          exit 1
