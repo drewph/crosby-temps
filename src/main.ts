@@ -64,6 +64,7 @@ const WEEKDAY_LABELS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
 const locationName = document.getElementById('location-name');
 const coordinates = document.getElementById('coordinates');
+const appRoot = document.getElementById('app');
 const status = document.getElementById('status');
 const tableBody = document.querySelector('#temperatures tbody');
 const cardList = document.getElementById('card-list');
@@ -248,7 +249,7 @@ const updateActiveView = (view: ViewMode) => {
 
 const showView = (view: ViewMode) => {
   if (view !== currentView) {
-    closeDayModal();
+    closeDayModal(false);
   }
   currentView = view;
   updateActiveView(view);
@@ -266,26 +267,71 @@ const showView = (view: ViewMode) => {
   }
 };
 
-const handleEscapeClose = (event: KeyboardEvent) => {
-  if (event.key === 'Escape') {
-    closeDayModal();
+const closeDayModal = (restoreFocus = true) => {
+  const trigger = selectedCalendarCell;
+
+  modalOverlay?.remove();
+  modalOverlay = null;
+
+  trigger?.classList.remove('selected');
+  selectedCalendarCell = null;
+
+  document.removeEventListener('keydown', handleModalKeydown);
+  document.body.classList.remove('modal-open');
+  appRoot?.removeAttribute('inert');
+
+  if (restoreFocus && trigger?.isConnected) {
+    trigger.focus();
   }
 };
 
-const closeDayModal = () => {
-  if (modalOverlay) {
-    modalOverlay.remove();
-    modalOverlay = null;
+const getFocusableElements = (container: HTMLElement): HTMLElement[] =>
+  Array.from(
+    container.querySelectorAll<HTMLElement>(
+      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+    )
+  ).filter((element) => !element.hasAttribute('disabled'));
+
+const handleModalKeydown = (event: KeyboardEvent) => {
+  if (event.key === 'Escape') {
+    event.preventDefault();
+    closeDayModal();
+    return;
   }
-  if (selectedCalendarCell) {
-    selectedCalendarCell.classList.remove('selected');
-    selectedCalendarCell = null;
+
+  if (event.key !== 'Tab' || !modalOverlay) {
+    return;
   }
-  document.removeEventListener('keydown', handleEscapeClose);
+
+  const sheet = modalOverlay.querySelector<HTMLElement>('.bottom-sheet');
+  if (!sheet) {
+    return;
+  }
+
+  const focusable = getFocusableElements(sheet);
+  if (!focusable.length) {
+    event.preventDefault();
+    sheet.focus();
+    return;
+  }
+
+  const first = focusable[0];
+  const last = focusable[focusable.length - 1];
+  const active = document.activeElement;
+
+  if (event.shiftKey) {
+    if (active === first || !sheet.contains(active)) {
+      event.preventDefault();
+      last.focus();
+    }
+  } else if (active === last || !sheet.contains(active)) {
+    event.preventDefault();
+    first.focus();
+  }
 };
 
 const openDayModal = (day: Day, cell: HTMLElement) => {
-  closeDayModal();
+  closeDayModal(false);
 
   selectedCalendarCell = cell;
   selectedCalendarCell.classList.add('selected');
@@ -295,20 +341,26 @@ const openDayModal = (day: Day, cell: HTMLElement) => {
 
   const sheet = document.createElement('div');
   sheet.className = 'bottom-sheet';
+  sheet.setAttribute('role', 'dialog');
+  sheet.setAttribute('aria-modal', 'true');
+  sheet.tabIndex = -1;
 
   const header = document.createElement('div');
   header.className = 'bottom-sheet__header';
 
+  const titleId = 'day-dialog-title';
   const title = document.createElement('h4');
   title.className = 'bottom-sheet__title';
+  title.id = titleId;
   title.textContent = formatFullDateWithWeekday(day.isoDate, LOCATION.timezone);
+  sheet.setAttribute('aria-labelledby', titleId);
 
   const closeButton = document.createElement('button');
   closeButton.type = 'button';
   closeButton.className = 'close-button';
   closeButton.setAttribute('aria-label', 'Close');
   closeButton.textContent = '×';
-  closeButton.addEventListener('click', closeDayModal);
+  closeButton.addEventListener('click', () => closeDayModal());
 
   header.append(title, closeButton);
 
@@ -330,8 +382,15 @@ const openDayModal = (day: Day, cell: HTMLElement) => {
     }
   });
 
-  document.addEventListener('keydown', handleEscapeClose);
   document.body.appendChild(modalOverlay);
+  document.body.classList.add('modal-open');
+  appRoot?.setAttribute('inert', '');
+
+  document.addEventListener('keydown', handleModalKeydown);
+  closeButton.focus();
+  if (document.activeElement !== closeButton) {
+    sheet.focus();
+  }
 };
 
 const makeDayCellInteractive = (cell: HTMLElement, day: Day) => {
@@ -531,7 +590,7 @@ const renderMonthSections = (container: HTMLElement, days: Day[], compact: boole
 
 const renderCalendarView = (days: Day[]) => {
   if (!calendarSection) return;
-  closeDayModal();
+  closeDayModal(false);
   calendarSection.innerHTML = '';
 
   if (!days.length) {
@@ -547,7 +606,7 @@ const renderCalendarView = (days: Day[]) => {
 
 const renderYearView = () => {
   if (!yearSection) return;
-  closeDayModal();
+  closeDayModal(false);
   yearSection.innerHTML = '';
 
   const record = yearCache.get(yearViewYear);
@@ -618,7 +677,7 @@ const handleCompactViewportChange = () => {
   const nextCompact = isCompactCalendar();
   if (nextCompact === compactCalendarEnabled) return;
   compactCalendarEnabled = nextCompact;
-  closeDayModal();
+  closeDayModal(false);
 
   if (currentView === 'calendar') {
     renderCalendarView(cachedDays);
