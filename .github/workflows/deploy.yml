@@ -3,7 +3,15 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches: ["main"]
+  schedule:
+    # 06:15 UTC daily, after Open-Meteo has published the previous day.
+    - cron: "15 6 * * *"
   workflow_dispatch:
+    inputs:
+      year:
+        description: "Year to backfill (leave empty for the current year)"
+        required: false
+        type: string
 
 permissions:
   contents: read
@@ -17,6 +25,8 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -28,6 +38,31 @@ jobs:
 
       - name: Install dependencies
         run: npm install
+
+      - name: Record the daily snapshot
+        if: github.event_name != 'push'
+        env:
+          SNAPSHOT_YEAR: ${{ inputs.year }}
+        run: |
+          if [ -n "$SNAPSHOT_YEAR" ]; then
+            node scripts/snapshot.mjs --year="$SNAPSHOT_YEAR"
+          else
+            node scripts/snapshot.mjs
+          fi
+
+      - name: Commit the snapshot
+        if: github.event_name != 'push'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add public/data
+          if git diff --cached --quiet; then
+            echo "Snapshot already current."
+            exit 0
+          fi
+          git commit -m "Update temperature snapshot"
+          git pull --rebase origin main
+          git push origin HEAD:main
 
       - name: Run tests
         run: npm test
