@@ -11,10 +11,11 @@ Last updated: 2026-10-25
 
 ## Open items
 
-1. **Confirm the 06:15 UTC schedule fires.** As of 2026-10-25 ~13:00 UTC there are zero runs with event `schedule`. Push and `workflow_dispatch` work. If it has still not fired tomorrow, add a fallback trigger before relying on frozen data.
-2. **Unify List/Calendar with the snapshot** once the cron is proven. They currently read the live archive; Year reads the snapshot. Values match exactly today, but a revision would make the same date show different squares.
-3. Optional: print/PDF colour legend for yarn shopping.
-4. Optional: mobile moon-card layout; stronger smoke test comparing the deployed asset hash.
+1. **Merge PR #38** (`docs/handover`): AGENTS.md, the auto-loaded handover, `/handover` and the `session-handover` skill. Until it merges, new sessions only see these files when run from this working tree.
+2. **Confirm the 06:15 UTC schedule fires.** As of 2026-10-25 13:30 UTC there are zero runs with event `schedule`. Push and `workflow_dispatch` work. If it has still not fired tomorrow, add a fallback trigger before relying on frozen data.
+3. **Unify List/Calendar with the snapshot** once the cron is proven. They currently read the live archive; Year reads the snapshot. Values match exactly today, but a revision would make the same date show different squares.
+4. Optional: print/PDF colour legend for yarn shopping.
+5. Optional: mobile moon-card layout; stronger smoke test comparing the deployed asset hash.
 
 ## Decisions
 
@@ -22,6 +23,7 @@ Last updated: 2026-10-25
 - Use Open-Meteo gridded data, not Ronaldsway station data. No bias correction.
 - 2 °C bands, 16 colours. Outer = max, inner = min. The physical proportions are illustrative; the crocheter chooses the pattern.
 - Snapshots live in `public/data/<year>.json`; years without one use the archive.
+- Session handover lives in the repo: public `AGENTS.md` plus auto-loaded `docs/HANDOVER.md`; private notes stay in `docs/private/` (gitignored). Update it at checkpoints, not only at session end.
 - Do not merge PRs on the user's behalf.
 
 ## Data checks (2026-10-25)
@@ -45,8 +47,11 @@ Last updated: 2026-10-25
 - `getYesterday()` is timezone-aware; every view intentionally ends yesterday.
 - Year-view CSS is scoped with `#year-view`; empty cells are hidden to keep the patchwork readable.
 - CI uses Node 24 and `npm ci`; keep `package-lock.json` committed.
+- The public handover must stay sanitized: no secrets, tokens, personal data, absolute paths or session IDs.
+- `/handover` and the `session-handover` skill are project-scoped; run OpenCode from the repository.
 
 ## Recent
 
+- 2026-10-25: durable handover system — AGENTS.md, auto-loaded `docs/HANDOVER.md`, `/handover` command and `session-handover` skill (PR #38, b38f1f9).
 - 2026-10-25: accessible dialog, live-region cleanup, noscript (PR #37); housekeeping — attribution, CI typecheck/lockfile/smoke test, favicon, contrast (PR #36); year view (PR #35); daily snapshot pipeline (PR #34).
 - 2026-10-24: data freshness, timeouts and missing-day notice (PR #30); calendar squares (PR #32, #33); local moon calculation (PR #29); colour legend (PR #28); logo 1.6 MB → 42 KB (PR #31).
