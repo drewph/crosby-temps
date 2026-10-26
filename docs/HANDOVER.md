@@ -11,10 +11,9 @@ Last updated: 2026-10-26
 
 ## Open items
 
-1. **Schedule experiment (27–29 Oct).** Four probes at 00:15, 02:15, 04:15 and 06:15 UTC. Review actual start times, which slot first commits, and whether early runs freeze values that later change. If the snapshot is reliably ready before ~08:00 BST with no revisions, keep the extra slots; otherwise revert to 06:15 and add the provisional tail.
-2. **Decide the source policy.** Keep List live / Year frozen, or move to snapshot plus a provisional tail. Do not unify blindly: availability for the current day beats consistency.
-3. Optional: print/PDF colour legend for yarn shopping.
-4. Optional: mobile moon-card layout; stronger smoke test comparing the deployed asset hash.
+1. **Schedule experiment review (27–30 Oct).** Follow `docs/SCHEDULE-EXPERIMENT.md`. At review, implement exactly one: **S** (keep the useful early probe, switch views to the frozen snapshot) or **P** (single 06:15 cron, snapshot plus a provisional live tail). Do not ship both. Review on 30 Oct evening, or 31 Oct if the last probe is delayed.
+2. Optional: print/PDF colour legend for yarn shopping.
+3. Optional: mobile moon-card layout; stronger smoke test comparing the deployed asset hash.
 
 ## Decisions
 
@@ -35,7 +34,7 @@ Last updated: 2026-10-26
 
 ## Pipeline
 
-- `.github/workflows/deploy.yml` triggers on push to `main`, four schedule probes at 00:15/02:15/04:15/06:15 UTC (experiment 27–29 Oct), and `workflow_dispatch` with an optional `year`.
+- `.github/workflows/deploy.yml` triggers on push to `main`, four schedule probes at 00:15/02:15/04:15/06:15 UTC (experiment 27–30 Oct; see `docs/SCHEDULE-EXPERIMENT.md`), and `workflow_dispatch` with an optional `year`.
 - The first scheduled run (#41) fired at 13:02 UTC on 26 Oct, ~6h47 after the 06:15 slot, and completed every step including the bot commit, deploy and smoke test.
 - The snapshot step runs on non-push events, commits `public/data` as `github-actions[bot]`, then builds and deploys in the same run (a `GITHUB_TOKEN` push does not retrigger workflows).
 - Workflow permissions: `contents: write` on build; `pages: write` and `id-token: write` on deploy. The repository default is read-only; YAML grants elevate it.
@@ -49,14 +48,15 @@ Last updated: 2026-10-26
 - Year-view CSS is scoped with `#year-view`; empty cells are hidden to keep the patchwork readable.
 - CI uses Node 24 and `npm ci`; keep `package-lock.json` committed.
 - Cron is best-effort: run #41 was ~6h47 late. A late run is harmless; the job is idempotent and backfills missing dates.
-- The extra schedule slots are a temporary experiment (review 29 Oct). Remove them if they do not make the snapshot reliably available before ~08:00 BST.
+- The extra schedule slots are a temporary experiment (review 30 Oct). Remove them if they do not make the snapshot reliably available before ~08:00 BST.
 - An early run can freeze a more preliminary value; monitor the snapshot against the API for revisions.
+- The experiment procedure and the S/P decision rule live in `docs/SCHEDULE-EXPERIMENT.md`; implement exactly one branch at review.
 - The public handover must stay sanitized: no secrets, tokens, personal data, absolute paths or session IDs.
 - `/handover` and the `session-handover` skill are project-scoped; run OpenCode from the repository.
 
 ## Recent
 
-- 2026-10-26: added schedule probes at 00:15/02:15/04:15/06:15 UTC to measure delay and archive availability (review 29 Oct).
+- 2026-10-26: schedule probes (00:15/02:15/04:15/06:15 UTC) and the S/P analysis plan (`docs/SCHEDULE-EXPERIMENT.md`); review 30 Oct.
 - 2026-10-26: scheduled run #41 succeeded (fired 13:02 UTC, ~6h47 late), added 25 Oct as 10.2 / 8.4 (commit 9993370); handover system merged (PR #38, 750bb37).
 - 2026-10-25: durable handover system — AGENTS.md, auto-loaded `docs/HANDOVER.md`, `/handover` command and `session-handover` skill (PR #38, b38f1f9).
 - 2026-10-25: accessible dialog, live-region cleanup, noscript (PR #37); housekeeping — attribution, CI typecheck/lockfile/smoke test, favicon, contrast (PR #36); year view (PR #35); daily snapshot pipeline (PR #34).
