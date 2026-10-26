@@ -4,7 +4,7 @@ on:
   push:
     branches: ["main"]
   schedule:
-    # Experiment 2026-10-27..29: probe scheduler delay and archive availability.
+    # Experiment 2026-10-27..30: probe scheduler delay and archive availability.
     # Keep 06:15 as the baseline. Review actual start times, which slot first
     # commits, and whether early runs freeze values that later change.
     - cron: "15 0 * * *"
