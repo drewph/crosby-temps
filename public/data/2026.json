@@ -1789,6 +1789,12 @@
       "minC": 7.7,
       "source": "archive",
       "recordedAt": "2026-10-25T11:47:30.481Z"
+    },
+    "2026-10-25": {
+      "maxC": 10.2,
+      "minC": 8.4,
+      "source": "archive",
+      "recordedAt": "2026-10-26T13:02:45.130Z"
     }
   }
 }
