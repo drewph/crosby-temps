@@ -30,16 +30,20 @@ A small static site that lists the last week of max/min daily temperatures for C
 
 ## Views
 
-- **List** and **Calendar** show the selected range (last 7, 30 or 60 days).
+- **List** and **Calendar** show the selected range (last 7, 30 or 60 days),
+  frozen snapshot first, with a labelled provisional tail for any day the
+  snapshot has not recorded yet.
 - **Year** shows every month of a chosen year. It reads
   `public/data/<year>.json` when a snapshot exists and falls back to the
   Open-Meteo archive for earlier years. Select a year with the picker.
 
 ## Daily data snapshot
 
-The site itself reads Open-Meteo live, but `public/data/<year>.json` keeps a frozen
-record of each day's max/min temperature so past squares stay stable when the
-reanalysis data is revised.
+`public/data/<year>.json` keeps a frozen record of each day's max/min temperature
+so past squares stay stable when the reanalysis data is revised. The site shows
+those frozen values for every date they cover; dates the snapshot has not reached
+come from the live Open-Meteo archive and are marked **provisional** until the next
+run freezes them.
 
 - A scheduled workflow runs at 06:15 UTC, records yesterday, commits the file
   and deploys. It only fills dates that are missing; it never overwrites one.

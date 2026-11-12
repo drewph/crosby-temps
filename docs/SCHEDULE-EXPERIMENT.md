@@ -84,10 +84,45 @@ must be final, prefer **P** or a later cron over **S**.
 
 ## Review checklist
 
-- [ ] Pull the scheduled-run table and compute delays.
-- [ ] Identify the first bot commit each day; record time and probe.
-- [ ] Count days frozen by 07:00 UTC.
-- [ ] Compare snapshot vs API; count band-level changes.
-- [ ] Apply the rule: S or P.
-- [ ] Write the result in `docs/HANDOVER.md`; remove the losing schedule or probes.
-- [ ] Implement the chosen branch as one PR with tests and screenshots.
+- [x] Pull the scheduled-run table and compute delays.
+- [x] Identify the first bot commit each day; record time and probe.
+- [x] Count days frozen by 07:00 UTC.
+- [x] Compare snapshot vs API; count band-level changes.
+- [x] Apply the rule: S or P.
+- [x] Write the result in `docs/HANDOVER.md`; remove the losing schedule or probes.
+- [x] Implement the chosen branch as one PR with tests and screenshots.
+
+## Outcome (reviewed 12 November 2026)
+
+Decision: **P — provisional tail.**
+
+| Date | Probe starts (UTC) | First bot commit | Delay vs 00:15 slot | Frozen by 07:00 UTC |
+|---|---|---|---|---|
+| 27 Oct | 05:10, 07:44, 09:47, 12:11 | 05:10 | +4h55 | yes |
+| 28 Oct | 05:46, 08:22, 10:32, 12:54 | 05:46 | +5h31 | yes |
+| 29 Oct | 05:52, 08:24, 10:51, 13:00 | 05:52 | +5h37 | yes |
+| 30 Oct | 05:53, 08:33, 10:50, 12:55 | 05:53 | +5h38 | yes |
+
+- **Scheduler:** 4/4 days frozen before 07:00 UTC, and all 16 runs succeeded with no
+  cancellations, so the two scheduler conditions for **S** were met.
+- **Revisions at review:** the four values frozen during the window (26–29 Oct)
+  matched the archive exactly, so **S** also passed the band check on the day.
+- **Revisions since:** 30 Oct min 10.9 → 10.4 and 1 Nov min 6.9 → 6.3. Both moved one
+  band, i.e. the inner square changes colour. Across 25 Oct–11 Nov (18 days frozen
+  within a day of the date) 2/18 ≈ 11% of days changed colour. ERA5 finalisation did
+  this, and it was invisible on 30–31 October as the limitation predicted.
+- **Availability drift:** from 31 Oct to 12 Nov only 10/13 days were frozen by 07:00
+  UTC — 9 Nov at 09:40 (the first run failed in the snapshot step), 10 Nov at 07:23 and
+  12 Nov at 07:16. The 00:15 probe landed anywhere between 05:10 and 07:16, so the
+  slot does not guarantee the 08:00 BST target.
+- **Noise:** four workflow runs and four deploys per day, against one baseline.
+
+**Why P:** the goal was morning availability *without* freezing values that later
+change. **S** could not promise the second half, and the 11% colour churn is visible
+to a crocheter who has already worked the row. **P** keeps one canonical freeze and
+makes the wait explicit.
+
+Implemented: single 06:15 UTC cron; List and Calendar show the frozen snapshot plus a
+provisional live tail; every provisional day is labelled in the list, the calendar and
+the day sheet; a “Run workflow now” link appears in the provisional notice and the
+footer; Year stays frozen-only.
