@@ -18,6 +18,7 @@ import { getTempPillColors, getTemperatureScale } from './utils/temperatureBands
 import { buildDays, buildMonthGrid, groupByMonthKey } from './utils/calendar';
 import { COMPACT_CALENDAR_QUERY, isCompactCalendar } from './utils/responsive';
 import { getYearDateRange, snapshotToDailyResponse } from './utils/yearData';
+import { describeProvisionalTail, mergeFrozenWithLiveTail } from './utils/freshness';
 import { DailyResponse, Day, TemperatureRow } from './types';
 
 type OpenMeteoResponse = {
@@ -38,6 +39,7 @@ const LOCATION = {
 const DEFAULT_RANGE: RangeOption = 7;
 const DEFAULT_VIEW: ViewMode = 'list';
 const FETCH_TIMEOUT_MS = 8000;
+const ACTIONS_URL = 'https://github.com/drewph/crosby-temps/actions/workflows/deploy.yml';
 const MAX_LISTED_MISSING_DATES = 3;
 let currentRange: RangeOption = DEFAULT_RANGE;
 let currentView: ViewMode = DEFAULT_VIEW;
@@ -56,6 +58,8 @@ const getCurrentYear = (): number =>
 
 let listLastIso: string | undefined;
 let listNotice = '';
+let listProvisionalDates: string[] = [];
+let listDetail = 'archive';
 let yearViewYear = getCurrentYear();
 let yearLoadToken = 0;
 const yearCache = new Map<number, YearRecord>();
@@ -104,10 +108,28 @@ const setStatus = (message: string, isError = false) => {
   status.classList.toggle('error', isError);
 };
 
-const setDataNotice = (message = '') => {
+const setDataNotice = (message = '', showRunLink = false) => {
   if (!dataNoticeElement) return;
-  dataNoticeElement.textContent = message;
-  dataNoticeElement.hidden = message === '';
+
+  dataNoticeElement.replaceChildren();
+  if (!message) {
+    dataNoticeElement.hidden = true;
+    return;
+  }
+
+  dataNoticeElement.append(document.createTextNode(message));
+
+  if (showRunLink) {
+    const link = document.createElement('a');
+    link.className = 'data-notice__link';
+    link.href = ACTIONS_URL;
+    link.target = '_blank';
+    link.rel = 'noopener noreferrer';
+    link.textContent = 'Run workflow now';
+    dataNoticeElement.append(' ', link);
+  }
+
+  dataNoticeElement.hidden = false;
 };
 
 const setDataThrough = (latestIsoDate?: string, detail?: string) => {
@@ -227,6 +249,21 @@ const createTemperatureSquare = (max: number, min: number, size: 'sm' | 'md' | '
   square.appendChild(inner);
 
   return square;
+};
+
+const createProvisionalBadge = () => {
+  const badge = document.createElement('span');
+  badge.className = 'provisional-badge';
+  badge.textContent = 'Provisional';
+  return badge;
+};
+
+const createProvisionalFlag = () => {
+  const flag = document.createElement('span');
+  flag.className = 'provisional-flag';
+  flag.title = 'Provisional: from the live archive and may change.';
+  flag.setAttribute('aria-hidden', 'true');
+  return flag;
 };
 
 const updateActiveRange = (range: RangeOption) => {
@@ -375,6 +412,14 @@ const openDayModal = (day: Day, cell: HTMLElement) => {
 
   sheet.append(header, square, pillRow);
 
+  if (day.provisional) {
+    const note = document.createElement('p');
+    note.className = 'bottom-sheet__note';
+    note.textContent =
+      'Provisional: from the live archive and may still change until the 06:15 UTC snapshot freezes this day.';
+    sheet.appendChild(note);
+  }
+
   modalOverlay.appendChild(sheet);
   modalOverlay.addEventListener('click', (event) => {
     if (event.target === modalOverlay) {
@@ -394,9 +439,10 @@ const openDayModal = (day: Day, cell: HTMLElement) => {
 };
 
 const makeDayCellInteractive = (cell: HTMLElement, day: Day) => {
+  const provisionalNote = day.provisional ? ' Provisional: from the live archive and may change.' : '';
   const label = `${formatFullDateWithWeekday(day.isoDate, LOCATION.timezone)}. High ${formatTemperature(
     day.maxC
-  )} degrees Celsius, low ${formatTemperature(day.minC)} degrees.`;
+  )} degrees Celsius, low ${formatTemperature(day.minC)} degrees.${provisionalNote}`;
 
   cell.setAttribute('role', 'button');
   cell.setAttribute('tabindex', '0');
@@ -417,15 +463,19 @@ const buildRows = (days: Day[]): TemperatureRow[] =>
     .map((day) => ({
       date: day.isoDate,
       max: day.maxC,
-      min: day.minC
+      min: day.minC,
+      provisional: day.provisional === true
     }));
 
 const renderTableRows = (rows: TemperatureRow[]) => {
   if (!tableBody) return;
   tableBody.innerHTML = '';
 
-  rows.forEach(({ date, max, min }) => {
+  rows.forEach(({ date, max, min, provisional }) => {
     const row = document.createElement('tr');
+    if (provisional) {
+      row.classList.add('is-provisional');
+    }
     const { weekday, date: formattedDate } = formatDateWithWeekday(date, LOCATION.timezone);
 
     const dateCell = document.createElement('td');
@@ -440,6 +490,9 @@ const renderTableRows = (rows: TemperatureRow[]) => {
     dateElement.textContent = formattedDate;
     dateElement.className = 'date-subtext';
     dateStack.append(weekdayElement, dateElement);
+    if (provisional) {
+      dateStack.appendChild(createProvisionalBadge());
+    }
     dateCell.append(dateStack);
 
     const createTemperatureCell = (value: number, label: 'Max' | 'Min', variant: 'max' | 'min') => {
@@ -466,9 +519,12 @@ const renderCards = (rows: TemperatureRow[]) => {
   if (!cardList) return;
   cardList.innerHTML = '';
 
-  rows.forEach(({ date, max, min }) => {
+  rows.forEach(({ date, max, min, provisional }) => {
     const card = document.createElement('article');
     card.className = 'temp-card';
+    if (provisional) {
+      card.classList.add('is-provisional');
+    }
 
     const { weekday, date: formattedDate } = formatDateWithWeekday(date, LOCATION.timezone);
     const headerRow = document.createElement('div');
@@ -482,6 +538,9 @@ const renderCards = (rows: TemperatureRow[]) => {
     dayEl.className = 'date-subtext';
     dayEl.textContent = formattedDate;
     dateRow.append(weekdayEl, dayEl);
+    if (provisional) {
+      dateRow.appendChild(createProvisionalBadge());
+    }
 
     const square = createTemperatureSquare(max, min, 'md');
     square.classList.add('card-square');
@@ -545,6 +604,10 @@ const renderMonthSections = (container: HTMLElement, days: Day[], compact: boole
         return;
       }
 
+      if (day.provisional) {
+        cell.classList.add('is-provisional');
+      }
+
       if (compact) {
         cell.classList.add('compact');
         const inner = document.createElement('div');
@@ -557,6 +620,9 @@ const renderMonthSections = (container: HTMLElement, days: Day[], compact: boole
         const square = createTemperatureSquare(day.maxC, day.minC, 'sm');
 
         inner.append(dayNumber, square);
+        if (day.provisional) {
+          inner.appendChild(createProvisionalFlag());
+        }
         cell.append(inner);
       } else {
         const dayNumber = document.createElement('div');
@@ -577,6 +643,9 @@ const renderMonthSections = (container: HTMLElement, days: Day[], compact: boole
         pillStack.append(maxPill, minPill);
 
         cell.append(topRow, pillStack);
+        if (day.provisional) {
+          cell.appendChild(createProvisionalFlag());
+        }
       }
 
       makeDayCellInteractive(cell, day);
@@ -622,8 +691,13 @@ const renderYearView = () => {
 };
 
 const applyListMeta = () => {
-  setDataThrough(listLastIso);
-  setDataNotice(listNotice);
+  setDataThrough(listLastIso, listLastIso ? listDetail : undefined);
+
+  const provisionalNote = describeProvisionalTail(listProvisionalDates, (isoDate) =>
+    formatDayMonth(isoDate, LOCATION.timezone)
+  );
+  const message = [listNotice, provisionalNote].filter(Boolean).join(' ');
+  setDataNotice(message, listProvisionalDates.length > 0);
 };
 
 const applyYearMeta = () => {
@@ -694,6 +768,16 @@ const fetchSnapshotYear = async (year: number): Promise<Day[] | undefined> => {
   const payload = await response.json();
   const daily = snapshotToDailyResponse(payload);
   return daily ? buildDays(daily) : undefined;
+};
+
+const fetchSnapshotRange = async (start: Date, end: Date): Promise<Day[]> => {
+  const years: number[] = [];
+  for (let year = start.getUTCFullYear(); year <= end.getUTCFullYear(); year += 1) {
+    years.push(year);
+  }
+
+  const results = await Promise.all(years.map((year) => fetchSnapshotYear(year).catch(() => undefined)));
+  return results.flatMap((days) => days ?? []);
 };
 
 const fetchArchiveYear = async (year: number): Promise<Day[]> => {
@@ -792,13 +876,7 @@ const loadYear = async (year: number) => {
   }
 };
 
-const fetchTemperatures = async (range: RangeOption) => {
-  setStatus('Loading data…');
-  setDataNotice('');
-
-  const { start, end } = getLastNDaysRange(range, LOCATION.timezone);
-  const expectedDayCount = Math.max(1, Math.round((end.getTime() - start.getTime()) / 86400000) + 1);
-
+const fetchArchiveRange = async (start: Date, end: Date): Promise<Day[]> => {
   const options = {
     latitude: LOCATION.latitude,
     longitude: LOCATION.longitude,
@@ -808,27 +886,67 @@ const fetchTemperatures = async (range: RangeOption) => {
   };
   const archiveUrl = buildOpenMeteoArchiveUrl(options);
 
+  const response = await fetch(archiveUrl.toString(), { signal: getFetchSignal() });
+  if (!response.ok) {
+    throw new Error(`Archive request failed with status ${response.status}`);
+  }
+
+  const data: OpenMeteoResponse = await response.json();
+  if (!data.daily || !data.daily.time || !data.daily.temperature_2m_max || !data.daily.temperature_2m_min) {
+    throw new Error('Unexpected response format');
+  }
+
+  return buildDays(data.daily);
+};
+
+const fetchTemperatures = async (range: RangeOption) => {
+  setStatus('Loading data…');
+  setDataNotice('');
+
+  const { start, end } = getLastNDaysRange(range, LOCATION.timezone);
+  const startIso = formatDate(start);
+  const endIso = formatDate(end);
+  const expectedDayCount = Math.max(1, Math.round((end.getTime() - start.getTime()) / 86400000) + 1);
+
   try {
-    const response = await fetch(archiveUrl.toString(), { signal: getFetchSignal() });
-    if (!response.ok) {
-      throw new Error(`Archive request failed with status ${response.status}`);
+    // The frozen snapshot is the record; the live archive fills any tail it
+    // has not reached yet, and those days are labelled provisional.
+    const [liveResult, frozenResult] = await Promise.allSettled([
+      fetchArchiveRange(start, end),
+      fetchSnapshotRange(start, end)
+    ]);
+
+    const frozenDays = (frozenResult.status === 'fulfilled' ? frozenResult.value : []).filter(
+      (day) => day.isoDate >= startIso && day.isoDate <= endIso
+    );
+    const liveDays = liveResult.status === 'fulfilled' ? liveResult.value : [];
+
+    if (liveResult.status === 'rejected' && !frozenDays.length) {
+      throw liveResult.reason;
     }
 
-    const data: OpenMeteoResponse = await response.json();
-    if (!data.daily || !data.daily.time || !data.daily.temperature_2m_max || !data.daily.temperature_2m_min) {
-      throw new Error('Unexpected response format');
-    }
-
-    cachedDays = buildDays(data.daily);
-    if (!cachedDays.length) {
+    const { days, provisionalDates } = mergeFrozenWithLiveTail(frozenDays, liveDays);
+    if (!days.length) {
       throw new Error('No usable temperature data in response');
     }
 
-    listLastIso = cachedDays[cachedDays.length - 1].isoDate;
-    const missingDates = findMissingDates(start, end, cachedDays.map((day) => day.isoDate));
-    listNotice = missingDates.length
-      ? `No data for ${formatMissingDateList(missingDates)}. Showing ${cachedDays.length} of ${expectedDayCount} days.`
-      : '';
+    cachedDays = days;
+    listProvisionalDates = provisionalDates;
+    listLastIso = days[days.length - 1].isoDate;
+    listDetail = frozenDays.length
+      ? provisionalDates.length
+        ? 'frozen snapshot + provisional'
+        : 'frozen snapshot'
+      : 'archive';
+
+    const missingDates = findMissingDates(start, end, days.map((day) => day.isoDate));
+    const notices = [
+      liveResult.status === 'rejected' ? 'Live archive unavailable; showing frozen dates only.' : '',
+      missingDates.length
+        ? `No data for ${formatMissingDateList(missingDates)}. Showing ${days.length} of ${expectedDayCount} days.`
+        : ''
+    ];
+    listNotice = notices.filter(Boolean).join(' ');
 
     if (currentView !== 'year') {
       renderForCurrentView();
@@ -839,6 +957,8 @@ const fetchTemperatures = async (range: RangeOption) => {
     cachedDays = [];
     listLastIso = undefined;
     listNotice = '';
+    listProvisionalDates = [];
+    listDetail = 'archive';
     if (currentView !== 'year') {
       renderForCurrentView();
     }

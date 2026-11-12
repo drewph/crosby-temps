@@ -352,6 +352,26 @@ main {
   display: none;
 }
 
+.data-notice__link {
+  color: #92400e;
+  font-weight: 700;
+}
+
+.provisional-badge {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 9999px;
+  border: 1px dashed #b45309;
+  background: #fffbeb;
+  color: #92400e;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 1px 6px;
+  line-height: 1.5;
+}
+
 .legend {
   list-style: none;
   margin: 0.9rem 0 0;
@@ -482,6 +502,10 @@ tbody tr:hover {
   margin: 0;
 }
 
+.temp-card.is-provisional {
+  border: 1px dashed #b45309;
+}
+
 .temp-card .temperatures {
   display: flex;
   gap: 0.6rem;
@@ -584,6 +608,7 @@ td.col-square {
 }
 
 .calendar-cell {
+  position: relative;
   min-height: 110px;
   background: #fff;
   border-radius: 12px;
@@ -593,6 +618,22 @@ td.col-square {
   flex-direction: column;
   gap: 0.4rem;
   box-shadow: 0 4px 12px rgba(15, 23, 42, 0.06);
+}
+
+.calendar-cell.is-provisional {
+  border: 1px dashed #b45309;
+  background: linear-gradient(180deg, #fffbeb, #fff);
+}
+
+.provisional-flag {
+  position: absolute;
+  right: 6px;
+  bottom: 6px;
+  width: 8px;
+  height: 8px;
+  border-radius: 9999px;
+  background: #f59e0b;
+  box-shadow: 0 0 0 2px #fff;
 }
 
 .calendar-top {
@@ -717,6 +758,13 @@ td.col-square {
   justify-content: center;
 }
 
+.bottom-sheet__note {
+  margin: 0.75rem 0 0;
+  color: #92400e;
+  font-size: 0.82rem;
+  text-align: center;
+}
+
 .calendar-empty {
   margin: 0;
   color: #475569;
@@ -796,6 +844,12 @@ td.col-square {
 
 .site-footer a:hover {
   text-decoration: none;
+}
+
+.site-footer .footer-actions {
+  display: inline-block;
+  margin-left: 0.35rem;
+  font-weight: 700;
 }
 
 @media (max-width: 900px) {

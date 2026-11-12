@@ -30,7 +30,8 @@ node scripts/snapshot.mjs [--year=YYYY]
 - The snapshot is the record. Freeze on first write; never overwrite a recorded date.
 - The daily job adds missing dates only; missing days must stay visible in the UI, not silently dropped.
 - Do not switch data source, bias-correct, or change band boundaries without recording the decision in `docs/HANDOVER.md`.
-- List and Calendar currently use the live archive; Year uses the snapshot. Unification is an open item.
+- List and Calendar show the frozen snapshot plus a provisional live tail for dates it has not frozen; Year is frozen-only.
+- Provisional days must stay labelled wherever they appear; never let a live value look recorded.
 
 ## Working style
 

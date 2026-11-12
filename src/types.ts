@@ -11,10 +11,13 @@ export type Day = {
   dayOfMonth: number;
   maxC: number;
   minC: number;
+  /** True for dates taken from the live archive before the snapshot froze them. */
+  provisional?: boolean;
 };
 
 export type TemperatureRow = {
   date: string;
   max: number;
   min: number;
+  provisional?: boolean;
 };
