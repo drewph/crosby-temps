@@ -1903,6 +1903,12 @@
       "minC": 2.6,
       "source": "archive",
       "recordedAt": "2026-11-13T14:35:25.667Z"
+    },
+    "2026-11-13": {
+      "maxC": 7.8,
+      "minC": 2.5,
+      "source": "archive",
+      "recordedAt": "2026-11-14T13:31:38.035Z"
     }
   }
 }
