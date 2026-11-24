@@ -1963,6 +1963,12 @@
       "minC": 5.8,
       "source": "archive",
       "recordedAt": "2026-11-23T18:08:16.067Z"
+    },
+    "2026-11-23": {
+      "maxC": 7.5,
+      "minC": 6.2,
+      "source": "archive",
+      "recordedAt": "2026-11-24T17:44:32.574Z"
     }
   }
 }
