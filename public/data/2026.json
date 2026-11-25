@@ -1969,6 +1969,12 @@
       "minC": 6.2,
       "source": "archive",
       "recordedAt": "2026-11-24T17:44:32.574Z"
+    },
+    "2026-11-24": {
+      "maxC": 9.2,
+      "minC": 7.1,
+      "source": "archive",
+      "recordedAt": "2026-11-25T17:13:58.765Z"
     }
   }
 }
