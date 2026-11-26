@@ -1975,6 +1975,12 @@
       "minC": 7.1,
       "source": "archive",
       "recordedAt": "2026-11-25T17:13:58.765Z"
+    },
+    "2026-11-25": {
+      "maxC": 7.5,
+      "minC": 4.8,
+      "source": "archive",
+      "recordedAt": "2026-11-26T16:54:08.491Z"
     }
   }
 }
