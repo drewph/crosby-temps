@@ -1981,6 +1981,12 @@
       "minC": 4.8,
       "source": "archive",
       "recordedAt": "2026-11-26T16:54:08.491Z"
+    },
+    "2026-11-26": {
+      "maxC": 6.4,
+      "minC": 5,
+      "source": "archive",
+      "recordedAt": "2026-11-27T16:39:58.500Z"
     }
   }
 }
