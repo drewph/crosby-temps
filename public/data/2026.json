@@ -1987,6 +1987,12 @@
       "minC": 5,
       "source": "archive",
       "recordedAt": "2026-11-27T16:39:58.500Z"
+    },
+    "2026-11-27": {
+      "maxC": 8.8,
+      "minC": 4.7,
+      "source": "archive",
+      "recordedAt": "2026-11-28T15:31:03.041Z"
     }
   }
 }
